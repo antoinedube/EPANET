@@ -364,7 +364,7 @@ void  initlinkflow(Project *pr, int i, char s, double k)
     {
         hyd->LinkFlow[i] = k * n->Pump[findpump(n,i)].Q0;
         printf("Initial value of flow in a pump:\n");
-        printf("\tk (setting in STATUS section of inp file == pump speed): %lf\tQ0: %lf\tQinit: %lf\n", k, n->Pump[findpump(n, i)].Q0, hyd->LinkFlow[i]);
+        printf("\tk (setting in STATUS section of inp file == pump speed): %lf\tQ0: %lf\tQinit: %lf\tH0: %lf\n", k, n->Pump[findpump(n, i)].Q0, hyd->LinkFlow[i], n->Pump[findpump(n, i)].H0);
     }
     else
     {

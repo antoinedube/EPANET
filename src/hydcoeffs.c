@@ -545,7 +545,7 @@ void  pipecoeff(Project *pr, int k)
         return;
     }
 
-    q = ABS(hyd->LinkFlow[k]); // Absolute value
+    q = ABS(hyd->LinkFlow[k]); // ABS: Absolute value
     printf("pipe flow: %lf\n", q);
     ml = pr->network.Link[k].Km;
     printf("pipe ml: %lf\n", ml);
@@ -573,10 +573,11 @@ void  pipecoeff(Project *pr, int k)
         hgrad += 2.0 * ml * q;
     }
 
-    printf("\n\n");
-
     // Adjust head loss sign for flow direction
     hloss *= SGN(hyd->LinkFlow[k]);
+
+    printf("p: %lf\ty: %lf\n", 1.0/hgrad, hloss/hgrad);
+    printf("\n\n");
 
     // P and Y coeffs.
     hyd->P[k] = 1.0 / hgrad;
@@ -717,8 +718,8 @@ void  pumpcoeff(Project *pr, int k)
     printf("pump link flow abs value: %lf\n", q);
     printf("pump H0: %lf\n", pump->H0);
     printf("pump setting: %lf\n", setting);
-    printf("pump n: %lf\n", pump->N);
-    printf("pump r: %lf\n", pump->R);
+    printf("pump N: %lf\n", pump->N);
+    printf("pump R: %lf\n", pump->R);
 
     // If no pump curve treat pump as an open valve
     if (pump->Ptype == NOCURVE)
@@ -808,6 +809,8 @@ void  pumpcoeff(Project *pr, int k)
             hloss = h0 + hgrad * hyd->LinkFlow[k];
         }
     }
+
+    printf("p: %lf\ty: %lf\n", 1.0/hgrad, hloss/hgrad);
     printf("\n\n");
 
     // P and Y coeffs.

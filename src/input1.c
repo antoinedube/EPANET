@@ -58,13 +58,43 @@ int getdata(Project *pr)
 
     // Read in network data
     rewind(pr->parser.InFile);
+
+    printf("%s:%d\n", __FILE__, __LINE__);
+    printf("pumps:\n");
+    for (int i=1; i<=pr->network.Npumps; i++) {
+        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
+    }
+    printf("\n\n");
+
     ERRCODE(readdata(pr));
+
+    printf("%s:%d\n", __FILE__, __LINE__);
+    printf("pumps:\n");
+    for (int i=1; i<=pr->network.Npumps; i++) {
+        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
+    }
+    printf("\n\n");
 
     // Adjust data and convert it to internal units
     if (!errcode) adjustdata(pr);
+    printf("adjustdata pumps:\n");
+    for (int i=1; i<=pr->network.Npumps; i++) {
+        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
+    }
+    printf("\n\n");
     if (!errcode) initunits(pr);
+    printf("initunits pumps:\n");
+    for (int i=1; i<=pr->network.Npumps; i++) {
+        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
+    }
+    printf("\n\n");
     ERRCODE(inittanks(pr));
     if (!errcode) convertunits(pr);
+    printf("convertunits pumps:\n");
+    for (int i=1; i<=pr->network.Npumps; i++) {
+        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
+    }
+    printf("\n\n");
     return errcode;
 }
 
@@ -267,7 +297,7 @@ void adjustdata(Project *pr)
     // Revise pressure units depending on flow units
     if (parser->Unitsflag != SI) parser->Pressflag = PSI;
     else if (parser->Pressflag == PSI) parser->Pressflag = METERS;
-    
+
     // Store value of viscosity & diffusivity
     ucf = 1.0;
     if (parser->Unitsflag == SI) ucf = SQR(MperFT);
@@ -321,7 +351,7 @@ void adjustdata(Project *pr)
         tank = &net->Tank[i];
         if (tank->Kb == MISSING) tank->Kb = qual->Kbulk;
     }
- 
+
     // Use default pattern if none assigned to a demand
     parser->DefPat = findpattern(net, parser->DefPatID);
     if (parser->DefPat > 0) for (i = 1; i <= net->Nnodes; i++)
@@ -559,7 +589,7 @@ void convertunits(Project *pr)
             demand->Base /= pr->Ucf[DEMAND];
         }
     }
-    
+
     // Convert PDA pressure limits
     hyd->Pmin /= pr->Ucf[PRESSURE];
     hyd->Preq /= pr->Ucf[PRESSURE];

@@ -122,6 +122,11 @@ int  hydsolve(Project *pr, int *iter, double *relerr)
         // pr->hyd->P[k] and pr->hyd->Y[k];
 
         matrixcoeffs(pr);
+
+        for (int i=0; i<=net->Nnodes; i++) {
+            printf("F[%d] = %lf\n", i, sm->F[i]);
+        }
+
         errcode = linsolve(sm, net->Njuncs);
 
         // Matrix ill-conditioning problem - if control valve causing problem,

@@ -790,14 +790,14 @@ int  linsolve(Smatrix *sm, int n)
          if (istop >= istrt)
          {
 
-	     // Before modification, update vectors 'first'
-	     // and 'link' for future modification steps
+         // Before modification, update vectors 'first'
+         // and 'link' for future modification steps
             first[k] = istrt;
             isub = NZSUB[istrt];
             link[k] = link[isub];
             link[isub] = k;
 
-	    // The actual mod is saved in vector 'temp'
+        // The actual mod is saved in vector 'temp'
             for (i = istrt; i <= istop; i++)
             {
                isub = NZSUB[i];
