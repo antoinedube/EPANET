@@ -12,6 +12,7 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "types.h"
@@ -68,6 +69,8 @@ int DLLEXPORT ENepanet(const char *inpFile, const char *rptFile,
  **  needed then the argument should be NULL.
  **-------------------------------------------------------------------------
  */
+    printf("%s:%d\n", __FILE__, __LINE__);
+    printf("num nodes: %d\n", _defaultProject->network.Nnodes);
     int errcode = 0;
     int warncode = 0;
 
@@ -85,6 +88,7 @@ int DLLEXPORT ENepanet(const char *inpFile, const char *rptFile,
 int DLLEXPORT ENinit(const char *rptFile, const char *outFile, int unitsType,
                      int headlossType)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     int errcode = 0;
     createtmpfiles();
     errcode = EN_init(_defaultProject, rptFile, outFile, unitsType, headlossType);
@@ -93,6 +97,7 @@ int DLLEXPORT ENinit(const char *rptFile, const char *outFile, int unitsType,
 
 int DLLEXPORT ENopen(const char *inpFile, const char *rptFile, const char *outFile)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     int errcode = 0;
     createtmpfiles();
     errcode = EN_open(_defaultProject, inpFile, rptFile, outFile);
@@ -101,36 +106,43 @@ int DLLEXPORT ENopen(const char *inpFile, const char *rptFile, const char *outFi
 
 int DLLEXPORT ENgettitle(char *line1, char *line2, char *line3)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_gettitle(_defaultProject, line1, line2, line3) ;
 }
 
 int DLLEXPORT ENsettitle(char *line1, char *line2, char *line3)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_settitle(_defaultProject, line1, line2, line3) ;
 }
 
 int DLLEXPORT ENgetcomment(int object, int index, char *comment)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_getcomment(_defaultProject, object, index, comment);
 }
 
 int  DLLEXPORT ENsetcomment(int object, int index, char *comment)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_setcomment(_defaultProject, object, index, comment);
 }
 
 int DLLEXPORT ENgetcount(int object, int *count)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_getcount(_defaultProject, object, count);
 }
 
 int DLLEXPORT ENsaveinpfile(const char *filename)
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     return EN_saveinpfile(_defaultProject, filename);
 }
 
 int DLLEXPORT ENclose()
 {
+    printf("%s:%d\n", __FILE__, __LINE__);
     EN_close(_defaultProject);
     removetmpfiles();
     return 0;
@@ -516,7 +528,7 @@ int DLLEXPORT ENgetvertexcount(int index, int *count)
 {
     return EN_getvertexcount(_defaultProject, index, count);
 }
-    
+
 int DLLEXPORT ENgetvertex(int index, int vertex, double *x, double *y)
 {
     return EN_getvertex(_defaultProject, index, vertex, x, y);
@@ -530,7 +542,7 @@ int DLLEXPORT ENsetvertex(int index, int vertex, double x, double y)
 int DLLEXPORT ENsetvertices(int index, double *x, double *y, int count)
 {
     return EN_setvertices(_defaultProject, index, x, y, count);
-}    
+}
 
 /********************************************************************
 
@@ -714,10 +726,10 @@ int DLLEXPORT ENsetcurve(int index, EN_API_FLOAT_TYPE *xValues,
     double *xx = NULL;
     double *yy = NULL;
     int i, errcode = 0;
-    
+
     if (xValues == NULL || yValues == NULL) return 206;
     if (nPoints < 1) return 202;
-    
+
     xx = (double *)calloc(nPoints, sizeof(double));
     yy = (double *)calloc(nPoints, sizeof(double));
     if (xx && yy)

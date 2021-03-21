@@ -125,21 +125,24 @@ void inithyd(Project *pr, int initflag)
         hyd->LinkSetting[i] = link->Kc;
 
         // Compute flow resistance
-        resistcoeff(pr, i);
+        printf("%s:%d\tComputing link r value\n", __FILE__, __LINE__);
+        resistcoeff(pr, i); // compute link resistance coefficient r
 
         // Start active control valves in ACTIVE position
-        if (
-            (link->Type == PRV || link->Type == PSV
-            || link->Type == FCV) && (link->Kc != MISSING)
-        ) hyd->LinkStatus[i] = ACTIVE;
+        if ( (link->Type == PRV || link->Type == PSV || link->Type == FCV) && (link->Kc != MISSING)) {
+            printf("%s:%d\n", __FILE__, __LINE__);
+            hyd->LinkStatus[i] = ACTIVE;
+        }
 
         // Initialize flows if necessary
         if (hyd->LinkStatus[i] <= CLOSED)
         {
+            printf("Init link flow to QZERO=%lf\n", QZERO);
             hyd->LinkFlow[i] = QZERO;
         }
         else if (ABS(hyd->LinkFlow[i]) <= QZERO || initflag > 0)
         {
+            printf("%s:%d\n", __FILE__, __LINE__);
             initlinkflow(pr, i, hyd->LinkStatus[i], hyd->LinkSetting[i]);
         }
 
@@ -192,7 +195,7 @@ int   runhyd(Project *pr, long *t)
     int   iter;          // Iteration count
     int   errcode;       // Error code
     double relerr;       // Solution accuracy
-    
+
     // Find new demands & control actions
     *t = time->Htime;
     demands(pr);
@@ -359,9 +362,13 @@ void  initlinkflow(Project *pr, int i, char s, double k)
     else if (link->Type == PUMP)
     {
         hyd->LinkFlow[i] = k * n->Pump[findpump(n,i)].Q0;
+        printf("Initial value of flow in a pump:\n");
+        printf("\tk (setting in STATUS section of inp file == pump speed): %lf\tQ0: %lf\tQinit: %lf\n", k, n->Pump[findpump(n, i)].Q0, hyd->LinkFlow[i]);
     }
     else
     {
+        printf("Initial value of flow in a pipe:\n");
+        printf("\tPI: %lf\tD: %lf\tQinit: %lf\n", PI, link->Diam, PI * SQR(link->Diam)/4.0);
         hyd->LinkFlow[i] = PI * SQR(link->Diam)/4.0;
     }
 }
@@ -390,7 +397,7 @@ void  setlinkstatus(Project *pr, int index, char value, StatusType *s, double *k
         if (t == PUMP)
         {
             *k = 1.0;
-            // Check if a re-opened pump needs its flow reset            
+            // Check if a re-opened pump needs its flow reset
             if (*s == CLOSED) resetpumpflow(pr, index);
         }
         if (t > PUMP &&  t != GPV) *k = MISSING;
@@ -594,11 +601,11 @@ int  controls(Project *pr)
             k1 = hyd->LinkSetting[k];
             k2 = k1;
             if (link->Type > PIPE) k2 = control->Setting;
-            
+
             // Check if a re-opened pump needs its flow reset
             if (link->Type == PUMP && s1 == CLOSED && s2 == OPEN)
                 resetpumpflow(pr, k);
-                
+
             if (s1 != s2 || k1 != k2)
             {
                 hyd->LinkStatus[k] = s2;
@@ -1005,7 +1012,7 @@ void  getallpumpsenergy(Project *pr)
         getenergy(pr, pump->Link, &(pump->Energy.CurrentPower),
             &(pump->Energy.CurrentEffic));
     }
-}    
+}
 
 
 void  tanklevels(Project *pr, long tstep)
@@ -1125,6 +1132,6 @@ void resetpumpflow(Project *pr, int i)
     Network *net = &pr->network;
     Spump *pump = &net->Pump[findpump(net, i)];
     if (pump->Ptype == CONST_HP)
-        pr->hydraul.LinkFlow[i] = pump->Q0; 
+        pr->hydraul.LinkFlow[i] = pump->Q0;
 }
 
