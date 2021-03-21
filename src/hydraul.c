@@ -117,6 +117,7 @@ void inithyd(Project *pr, int initflag)
     // Initialize links
     for (i = 1; i <= net->Nlinks; i++)
     {
+        printf("Link flow %d: %lf\n", i, hyd->LinkFlow[i]);
         link = &net->Link[i];
         link->ResultIndex = i;
 
@@ -125,7 +126,7 @@ void inithyd(Project *pr, int initflag)
         hyd->LinkSetting[i] = link->Kc;
 
         // Compute flow resistance
-        printf("%s:%d\tComputing link r value\n", __FILE__, __LINE__);
+        printf("%s:%d\tComputing link r value for link id: %d\n", __FILE__, __LINE__, i);
         resistcoeff(pr, i); // compute link resistance coefficient r
 
         // Start active control valves in ACTIVE position

@@ -715,7 +715,8 @@ void  pumpcoeff(Project *pr, int k)
     pump = &pr->network.Pump[p];
     printf("pump link id: %d\n", k);
     printf("pump link flow abs value: %lf\n", q);
-    printf("pump h0: %lf\n", pump->H0);
+    printf("pump H0: %lf\n", pump->H0);
+    printf("pump setting: %lf\n", setting);
     printf("pump n: %lf\n", pump->N);
     printf("pump r: %lf\n", pump->R);
 
@@ -755,6 +756,7 @@ void  pumpcoeff(Project *pr, int k)
         n = pump->N;
         if (ABS(n - 1.0) < TINY) n = 1.0;
         r = pump->R * pow(setting, 2.0 - n);
+        printf("r in equation: %lf\n", r);
 
         // Constant HP pump
         if (pump->Ptype == CONST_HP)
@@ -786,6 +788,7 @@ void  pumpcoeff(Project *pr, int k)
             printf("CURVE IS NONLINEAR\n");
             // ... compute pump curve's gradient
             hgrad = n * r * pow(q, n - 1.0);
+            printf("h0 in equation: %lf\n", h0);
             // ... use linear pump curve if gradient too small
             if (hgrad < hyd->RQtol)
             {
@@ -795,6 +798,8 @@ void  pumpcoeff(Project *pr, int k)
             }
             // ... otherwise compute head loss from pump curve
             else hloss = h0 + hgrad * hyd->LinkFlow[k] / n;
+
+            printf("hloss: %lf\n", hloss);
         }
         // ... pump curve is linear
         else
