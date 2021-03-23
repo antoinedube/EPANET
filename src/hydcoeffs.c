@@ -172,6 +172,7 @@ void   matrixcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\tcomputing matrix coefficients\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -222,6 +223,7 @@ void  linkcoeffs(Project *pr)
         link = &net->Link[k];
         n1 = link->N1;           // Start node of link
         n2 = link->N2;           // End node of link
+        printf("\t%d -> %d : %lf\n", n1, n2, hyd->LinkFlow[k]);
 
         // Update nodal flow excess (Xflow)
         // (Flow out of node is (-), flow into node is (+))
