@@ -123,8 +123,9 @@ int  hydsolve(Project *pr, int *iter, double *relerr)
 
         matrixcoeffs(pr);
 
+        printf("%s:%d\n", __FILE__, __LINE__);
         for (int i=0; i<=net->Nnodes; i++) {
-            printf("F[%d] = %lf\n", i, sm->F[i]);
+            printf("\tF[%d] = %lf\n", i, sm->F[i]);
         }
 
         errcode = linsolve(sm, net->Njuncs);

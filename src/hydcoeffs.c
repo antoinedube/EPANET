@@ -207,6 +207,7 @@ void  linkcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tlinkcoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -265,6 +266,7 @@ void  nodecoeffs(Project *pr)
 **----------------------------------------------------------------
 */
 {
+    printf("%s:%d\tnodecoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -275,6 +277,7 @@ void  nodecoeffs(Project *pr)
     // flow excess & add flow excess to RHS array F
     for (i = 1; i <= net->Njuncs; i++)
     {
+        printf("\tjunc %d\n", i);
         hyd->Xflow[i] -= hyd->DemandFlow[i];
         sm->F[sm->Row[i]] += hyd->Xflow[i];
     }
@@ -292,6 +295,7 @@ void  valvecoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tvalvecoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
 
@@ -302,6 +306,7 @@ void  valvecoeffs(Project *pr)
     // Examine each valve
     for (i = 1; i <= net->Nvalves; i++)
     {
+        printf("\tvalve: %d\n", i);
         // Find valve's link index
         valve = &net->Valve[i];
         k = valve->Link;
@@ -347,6 +352,7 @@ void  emittercoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\temittercoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -357,9 +363,13 @@ void  emittercoeffs(Project *pr)
 
     for (i = 1; i <= net->Njuncs; i++)
     {
+        printf("\temitter: %d\n", i);
         // Skip junctions without emitters
         node = &net->Node[i];
+        printf("\tKe: %lf\n", node->Ke);
         if (node->Ke == 0.0) continue;
+
+        printf("\temitter: never reached\n");
 
         // Find emitter head loss and gradient
         emitterheadloss(pr, i, &hloss, &hgrad);
@@ -387,6 +397,7 @@ void emitterheadloss(Project *pr, int i, double *hloss, double *hgrad)
 **-------------------------------------------------------------
 */
 {
+    printf("%s:%d\temitterheadloss\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     double  ke;
@@ -426,6 +437,7 @@ void  demandcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tdemandcoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -444,6 +456,7 @@ void  demandcoeffs(Project *pr)
     // Examine each junction node
     for (i = 1; i <= net->Njuncs; i++)
     {
+        printf("\tdemand: %d\n", i);
         // Skip junctions with non-positive demands
         if (hyd->NodeDemand[i] <= 0.0) continue;
 
@@ -474,6 +487,7 @@ void demandheadloss(Project *pr, int i, double dp, double n,
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tdemandheadloss\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     double d = hyd->DemandFlow[i];
@@ -521,6 +535,7 @@ void  pipecoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tpipecoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     double  hloss,     // Head loss
@@ -595,6 +610,7 @@ void DWpipecoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tDWpipecoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
     Slink   *link = &pr->network.Link[k];
 
@@ -643,6 +659,7 @@ double frictionFactor(double q, double e, double s, double *dfdq)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tfrictionfactor\n", __FILE__, __LINE__);
     double f;                // friction factor
     double x1, x2, x3, x4,
            y1, y2, y3,
@@ -689,6 +706,7 @@ void  pumpcoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tpumpcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     int    p;                // Pump index
@@ -831,6 +849,7 @@ void  curvecoeff(Project *pr, int i, double q, double *h0, double *r)
 **-------------------------------------------------------------------
 */
 {
+    printf("%s:%d\tcurvecoeffs\n", __FILE__, __LINE__);
     int   k1, k2, npts;
     double *x, *y;
     Scurve *curve;
@@ -868,6 +887,7 @@ void  gpvcoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tgpvcoeffs\n", __FILE__, __LINE__);
     int    i;
     double h0,        // Intercept of head loss curve segment
            r,         // Slope of head loss curve segment
@@ -910,6 +930,7 @@ void  pbvcoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tpbvcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
     Slink *link = &pr->network.Link[k];
 
@@ -946,6 +967,7 @@ void  tcvcoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\ttcvcoeffs\n", __FILE__, __LINE__);
     double km;
     Hydraul *hyd = &pr->hydraul;
     Slink *link = &pr->network.Link[k];
@@ -979,6 +1001,7 @@ void  prvcoeff(Project *pr, int k, int n1, int n2)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tprvcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
 
@@ -1032,6 +1055,7 @@ void  psvcoeff(Project *pr, int k, int n1, int n2)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tpsvcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
 
@@ -1084,6 +1108,7 @@ void  fcvcoeff(Project *pr, int k, int n1, int n2)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tfcvcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
 
@@ -1135,6 +1160,8 @@ void valvecoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tvalvecoeffs\n", __FILE__, __LINE__);
+    printf("\tvalve on link: %d\n", k);
     Hydraul *hyd = &pr->hydraul;
     Slink *link = &pr->network.Link[k];
 
@@ -1153,6 +1180,7 @@ void valvecoeff(Project *pr, int k)
     // Account for any minor headloss through the valve
     if (link->Km > 0.0)
     {
+        printf("\tvalve with minor headloss\n");
         q = fabs(flow);
         hgrad = 2.0 * link->Km * q;
 
@@ -1173,6 +1201,7 @@ void valvecoeff(Project *pr, int k)
     // low resistance linear head loss relation
     else
     {
+        printf("\tvalve without minor headloss: low resistance\n");
         hyd->P[k] = 1.0 / CSMALL;
         hyd->Y[k] = flow;
     }
