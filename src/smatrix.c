@@ -136,6 +136,7 @@ int  allocsmatrix(Smatrix *sm, int Nnodes, int Nlinks)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tallocsmatrix\tNnodes: %d\tNlinks: %d\n", __FILE__, __LINE__, Nnodes, Nlinks);
     int errcode = 0;
 
     // Memory for linear eqn. solver allocated in alloclinsolve().
@@ -226,6 +227,7 @@ int  localadjlists(Network *net, Smatrix *sm)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     int    i, j, k;
     int    pmark = 0;     // parallel link marker
     int    errcode = 0;
@@ -280,6 +282,7 @@ int  paralink(Network *net, Smatrix *sm, int i, int j, int k)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Padjlist alink;
     for (alink = net->Adjlist[i]; alink != NULL; alink = alink->next)
     {
@@ -306,6 +309,7 @@ void  xparalinks(Network *net)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     int    i;
     Padjlist    alink,       // Current item in adjacency list
                 blink;       // Previous item in adjacency list
@@ -352,6 +356,7 @@ int   reordernodes(Project *pr)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Smatrix *sm = &pr->hydraul.smatrix;
 
@@ -435,6 +440,7 @@ int factorize(Project *pr)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Smatrix *sm = &pr->hydraul.smatrix;
 
@@ -486,6 +492,7 @@ int  growlist(Project *pr, int knode, int *degree)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Smatrix *sm = &pr->hydraul.smatrix;
 
@@ -519,6 +526,7 @@ int  newlink(Project *pr, Padjlist alink, int *degree)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Smatrix *sm = &pr->hydraul.smatrix;
 
@@ -564,6 +572,7 @@ int  linked(Network *net, int i, int j)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Padjlist alink;
     for (alink = net->Adjlist[i]; alink != NULL; alink = alink->next)
     {
@@ -584,6 +593,7 @@ int  addlink(Network *net, int i, int j, int n)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Padjlist alink;
     alink = (struct Sadjlist *) malloc(sizeof(struct Sadjlist));
     if (alink == NULL) return 0;
@@ -605,6 +615,7 @@ int  storesparse(Project *pr, int n)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     Network  *net = &pr->network;
     Smatrix  *sm = &pr->hydraul.smatrix;
 
@@ -656,6 +667,7 @@ int  sortsparse(Smatrix *sm, int n)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     int  i, k;
     int  *xlnzt, *nzsubt, *lnzt, *nzt;
     int  errcode = 0;
@@ -709,6 +721,7 @@ void  transpose(int n, int *il, int *jl, int *xl, int *ilt, int *jlt,
 **---------------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     int  i, j, k, kk;
 
     for (i = 1; i <= n; i++) nzt[i] = 0;
@@ -752,6 +765,7 @@ int  linsolve(Smatrix *sm, int n)
 **--------------------------------------------------------------
 */
 {
+  printf("%s:%d\n", __FILE__, __LINE__);
     double *Aii  = sm->Aii;
     double *Aij  = sm->Aij;
     double *B    = sm->F;

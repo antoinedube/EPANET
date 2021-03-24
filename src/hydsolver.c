@@ -124,9 +124,26 @@ int  hydsolve(Project *pr, int *iter, double *relerr)
         matrixcoeffs(pr);
 
         printf("%s:%d\n", __FILE__, __LINE__);
-        for (int i=0; i<=net->Nnodes; i++) {
+        for (int i=1; i<=net->Nnodes; i++) {
+            printf("\tAii[%d] = %lf\n", i, sm->Aii[i]);
+        }
+        printf("\n");
+        for (int i=1; i<=sm->Ncoeffs; i++) {
+            printf("\tAij[%d] = %lf\n", i, sm->Aij[i]);
+        }
+        printf("\n");
+        for (int i=1; i<=net->Nnodes; i++) {
             printf("\tF[%d] = %lf\n", i, sm->F[i]);
         }
+        printf("\n");
+        for (int i=1; i<=net->Nnodes; i++) {
+            printf("\tXflow[%d] = %lf\n", i, hyd->Xflow[i]);
+        }
+        printf("\n");
+        for (int i=1; i<=net->Nnodes; i++) {
+            printf("\tdemand[%d] = %lf\n", i, hyd->DemandFlow[i]);
+        }
+        printf("\n\n");
 
         errcode = linsolve(sm, net->Njuncs);
 

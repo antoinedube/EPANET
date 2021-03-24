@@ -231,12 +231,14 @@ void  linkcoeffs(Project *pr)
         hyd->Xflow[n2] += hyd->LinkFlow[k];
 
         // Add to off-diagonal coeff. of linear system matrix
+        printf("\tNdx of %d: %d\n", k, sm->Ndx[k]);
         sm->Aij[sm->Ndx[k]] -= hyd->P[k];
 
         // Update linear system coeffs. associated with start node n1
         // ... node n1 is junction
         if (n1 <= net->Njuncs)
         {
+          printf("\tRow of %d: %d\n", n1, sm->Row[n1]);
             sm->Aii[sm->Row[n1]] += hyd->P[k];   // Diagonal coeff.
             sm->F[sm->Row[n1]] += hyd->Y[k];     // RHS coeff.
         }
@@ -248,6 +250,7 @@ void  linkcoeffs(Project *pr)
         // ... node n2 is junction
         if (n2 <= net->Njuncs)
         {
+          printf("\tRow of %d: %d\n", n2, sm->Row[n2]);
             sm->Aii[sm->Row[n2]] += hyd->P[k];   // Diagonal coeff.
             sm->F[sm->Row[n2]] -= hyd->Y[k];     // RHS coeff.
         }
