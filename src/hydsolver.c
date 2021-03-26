@@ -211,10 +211,6 @@ int  hydsolve(Project *pr, int *iter, double *relerr)
             nextcheck += hyd->CheckFreq;
         }
         (*iter)++;
-
-
-        printf("DEBUG: Computing a single iteration only.");
-        break;
     }
 
     // Iterations ended - report any errors.
