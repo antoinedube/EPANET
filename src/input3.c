@@ -416,8 +416,6 @@ int pumpdata(Project *pr)
     pump->Ecost = 0.0;
     pump->Epat = 0;
 
-    printf("%s:%d\tPump R: %lf\n", __FILE__, __LINE__, pump->R);
-
     if (n < 4) return 0;
 
     // If 4-th token is a number then input follows Version 1.x format
@@ -432,8 +430,6 @@ int pumpdata(Project *pr)
         }
         return (getpumpcurve(pr, m));
     }
-
-    printf("%s:%d\tPump R: %lf\n", __FILE__, __LINE__, pump->R);
 
     // Otherwise input follows Version 2 format
     // so retrieve keyword/value pairs
@@ -468,8 +464,6 @@ int pumpdata(Project *pr)
         else return 201;
         m = m + 2;  // Move to next keyword token
     }
-
-    printf("%s:%d\tPump R: %lf\n", __FILE__, __LINE__, pump->R);
 
     return 0;
 }

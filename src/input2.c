@@ -384,7 +384,6 @@ int updatepumpparams(Project *pr, int pumpindex)
     pump = &net->Pump[pumpindex];
     if (pump->Ptype == CONST_HP)  // Constant Hp pump
     {
-        printf("CONST HP\n");
         pump->H0 = 0.0;
         pump->R = -8.814 * net->Link[pump->Link].Km;
         pump->N = -1.0;
@@ -396,7 +395,6 @@ int updatepumpparams(Project *pr, int pumpindex)
 
     else if (pump->Ptype == NOCURVE) // Pump curve specified
     {
-        printf("NOCURVE\n");
         curveindex = pump->Hcurve;
         if (curveindex == 0) return 226;
         curve = &net->Curve[curveindex];
@@ -406,7 +404,6 @@ int updatepumpparams(Project *pr, int pumpindex)
         // Generic power function curve
         if (npts == 1)
         {
-            printf("ONE POINT\n");
             pump->Ptype = POWER_FUNC;
             q1 = curve->X[0];
             h1 = curve->Y[0];
@@ -418,7 +415,6 @@ int updatepumpparams(Project *pr, int pumpindex)
         // 3 point curve with shutoff head
         else if (npts == 3 && curve->X[0] == 0.0)
         {
-            printf("THREE POINTS\n");
             pump->Ptype = POWER_FUNC;
             h0 = curve->Y[0];
             q1 = curve->X[1];
@@ -430,7 +426,6 @@ int updatepumpparams(Project *pr, int pumpindex)
         // Custom pump curve
         else
         {
-            printf("CUSTOM\n");
             pump->Ptype = CUSTOM;
             for (m = 1; m < npts; m++)
             {
@@ -444,13 +439,9 @@ int updatepumpparams(Project *pr, int pumpindex)
         // Compute shape factors & limits of power function curves
         if (pump->Ptype == POWER_FUNC)
         {
-            printf("POWERFUNC\n");
             if (!powercurve(h0, h1, h2, q1, q2, &a, &b, &c)) return 227;
             else
             {
-                printf("h0, h1, h2 = %lf, %lf, %lf\n", h0, h1, h2);
-                printf("q1, q2 = %lf, %lf\n", q1, q2);
-                printf("a, b, c = %lf, %lf, %lf\n\n\n", a, b, c);
                 pump->H0 = -a;
                 pump->R = -b;
                 pump->N = c;

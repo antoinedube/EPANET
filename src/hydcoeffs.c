@@ -93,8 +93,6 @@ void  resistcoeff(Project *pr, int k)
         {
         case HW:
             link->R = 4.727 * L / pow(e, hyd->Hexp) / pow(d, 4.871);
-            printf("L: %lf\te: %lf\tHexp: %lf\td: %lf\n", L, e, hyd->Hexp, d);
-            printf("HW R coeff: %lf\n\n", link->R);
             break;
         case DW:
             link->R = L / 2.0 / 32.2 / d / SQR(PI * SQR(d) / 4.0);
@@ -172,7 +170,7 @@ void   matrixcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-  printf("%s:%d\tcomputing matrix coefficients\n", __FILE__, __LINE__);
+    printf("%s:%d\tcomputing matrix coefficients\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -223,7 +221,6 @@ void  linkcoeffs(Project *pr)
         link = &net->Link[k];
         n1 = link->N1;           // Start node of link
         n2 = link->N2;           // End node of link
-        printf("\t%d -> %d : %lf\n", n1, n2, hyd->LinkFlow[k]);
 
         // Update nodal flow excess (Xflow)
         // (Flow out of node is (-), flow into node is (+))
@@ -231,14 +228,12 @@ void  linkcoeffs(Project *pr)
         hyd->Xflow[n2] += hyd->LinkFlow[k];
 
         // Add to off-diagonal coeff. of linear system matrix
-        printf("\tNdx of %d: %d\n", k, sm->Ndx[k]);
         sm->Aij[sm->Ndx[k]] -= hyd->P[k];
 
         // Update linear system coeffs. associated with start node n1
         // ... node n1 is junction
         if (n1 <= net->Njuncs)
         {
-          printf("\tRow of %d: %d\n", n1, sm->Row[n1]);
             sm->Aii[sm->Row[n1]] += hyd->P[k];   // Diagonal coeff.
             sm->F[sm->Row[n1]] += hyd->Y[k];     // RHS coeff.
         }
@@ -250,7 +245,6 @@ void  linkcoeffs(Project *pr)
         // ... node n2 is junction
         if (n2 <= net->Njuncs)
         {
-          printf("\tRow of %d: %d\n", n2, sm->Row[n2]);
             sm->Aii[sm->Row[n2]] += hyd->P[k];   // Diagonal coeff.
             sm->F[sm->Row[n2]] -= hyd->Y[k];     // RHS coeff.
         }
@@ -282,7 +276,6 @@ void  nodecoeffs(Project *pr)
     // flow excess & add flow excess to RHS array F
     for (i = 1; i <= net->Njuncs; i++)
     {
-        printf("\tjunc %d\n", i);
         hyd->Xflow[i] -= hyd->DemandFlow[i];
         sm->F[sm->Row[i]] += hyd->Xflow[i];
     }
@@ -311,7 +304,6 @@ void  valvecoeffs(Project *pr)
     // Examine each valve
     for (i = 1; i <= net->Nvalves; i++)
     {
-        printf("\tvalve: %d\n", i);
         // Find valve's link index
         valve = &net->Valve[i];
         k = valve->Link;
@@ -368,13 +360,9 @@ void  emittercoeffs(Project *pr)
 
     for (i = 1; i <= net->Njuncs; i++)
     {
-        printf("\temitter: %d\n", i);
         // Skip junctions without emitters
         node = &net->Node[i];
-        printf("\tKe: %lf\n", node->Ke);
         if (node->Ke == 0.0) continue;
-
-        printf("\temitter: never reached\n");
 
         // Find emitter head loss and gradient
         emitterheadloss(pr, i, &hloss, &hgrad);
@@ -461,7 +449,6 @@ void  demandcoeffs(Project *pr)
     // Examine each junction node
     for (i = 1; i <= net->Njuncs; i++)
     {
-        printf("\tdemand: %d\n", i);
         // Skip junctions with non-positive demands
         if (hyd->NodeDemand[i] <= 0.0) continue;
 
@@ -549,7 +536,6 @@ void  pipecoeff(Project *pr, int k)
             q,         // Abs. value of flow
             r;         // Resistance coeff.
 
-    printf("\n\npipe coefficient for link: %d\n", k);
     // For closed pipe use headloss formula: hloss = CBIG*q
     if (hyd->LinkStatus[k] <= CLOSED)
     {
@@ -566,15 +552,11 @@ void  pipecoeff(Project *pr, int k)
     }
 
     q = ABS(hyd->LinkFlow[k]); // ABS: Absolute value
-    printf("pipe flow: %lf\n", q);
     ml = pr->network.Link[k].Km;
-    printf("pipe ml: %lf\n", ml);
     r = pr->network.Link[k].R;
-    printf("pipe r: %lf\n", r);
 
     // Friction head loss gradient
     hgrad = hyd->Hexp * r * pow(q, hyd->Hexp - 1.0);
-    printf("pipe n: %lf\n", hyd->Hexp);
 
     // Friction head loss:
     // ... use linear function for very small gradient
@@ -595,9 +577,6 @@ void  pipecoeff(Project *pr, int k)
 
     // Adjust head loss sign for flow direction
     hloss *= SGN(hyd->LinkFlow[k]);
-
-    printf("p: %lf\ty: %lf\n", 1.0/hgrad, hloss/hgrad);
-    printf("\n\n");
 
     // P and Y coeffs.
     hyd->P[k] = 1.0 / hgrad;
@@ -737,17 +716,10 @@ void  pumpcoeff(Project *pr, int k)
     q = ABS(hyd->LinkFlow[k]);
     p = findpump(&pr->network, k);
     pump = &pr->network.Pump[p];
-    printf("pump link id: %d\n", k);
-    printf("pump link flow abs value: %lf\n", q);
-    printf("pump H0: %lf\n", pump->H0);
-    printf("pump setting: %lf\n", setting);
-    printf("pump N: %lf\n", pump->N);
-    printf("pump R: %lf\n", pump->R);
 
     // If no pump curve treat pump as an open valve
     if (pump->Ptype == NOCURVE)
     {
-        printf("NOCURVE\n");
         hyd->P[k] = 1.0 / CSMALL;
         hyd->Y[k] = hyd->LinkFlow[k];
         return;
@@ -757,7 +729,6 @@ void  pumpcoeff(Project *pr, int k)
     // (Other pump types have pre-determined coeffs.)
     if (pump->Ptype == CUSTOM)
     {
-        printf("CUSTOM CURVE\n");
         // Find intercept (h0) & slope (r) of pump curve
         // line segment which contains speed-adjusted flow.
         curvecoeff(pr, pump->Hcurve, q / setting, &h0, &r);
@@ -774,13 +745,11 @@ void  pumpcoeff(Project *pr, int k)
     }
     else
     {
-        printf("NOT CUSTOM CURVE\n");
         // Adjust head loss coefficients for pump speed
         h0 = SQR(setting) * pump->H0;
         n = pump->N;
         if (ABS(n - 1.0) < TINY) n = 1.0;
         r = pump->R * pow(setting, 2.0 - n);
-        printf("r in equation: %lf\n", r);
 
         // Constant HP pump
         if (pump->Ptype == CONST_HP)
@@ -809,21 +778,17 @@ void  pumpcoeff(Project *pr, int k)
         // ... pump curve is nonlinear
         else if (n != 1.0)
         {
-            printf("CURVE IS NONLINEAR\n");
             // ... compute pump curve's gradient
             hgrad = n * r * pow(q, n - 1.0);
-            printf("h0 in equation: %lf\n", h0);
             // ... use linear pump curve if gradient too small
             if (hgrad < hyd->RQtol)
             {
-                printf("grad tolerance: %lf\n", hyd->RQtol);
                 hgrad = hyd->RQtol;
                 hloss = h0 + hgrad * hyd->LinkFlow[k];
             }
             // ... otherwise compute head loss from pump curve
             else hloss = h0 + hgrad * hyd->LinkFlow[k] / n;
 
-            printf("hloss: %lf\n", hloss);
         }
         // ... pump curve is linear
         else
@@ -832,9 +797,6 @@ void  pumpcoeff(Project *pr, int k)
             hloss = h0 + hgrad * hyd->LinkFlow[k];
         }
     }
-
-    printf("p: %lf\ty: %lf\n", 1.0/hgrad, hloss/hgrad);
-    printf("\n\n");
 
     // P and Y coeffs.
     hyd->P[k] = 1.0 / hgrad;
@@ -1166,7 +1128,6 @@ void valvecoeff(Project *pr, int k)
 */
 {
     printf("%s:%d\tvalvecoeffs\n", __FILE__, __LINE__);
-    printf("\tvalve on link: %d\n", k);
     Hydraul *hyd = &pr->hydraul;
     Slink *link = &pr->network.Link[k];
 
@@ -1185,7 +1146,6 @@ void valvecoeff(Project *pr, int k)
     // Account for any minor headloss through the valve
     if (link->Km > 0.0)
     {
-        printf("\tvalve with minor headloss\n");
         q = fabs(flow);
         hgrad = 2.0 * link->Km * q;
 
@@ -1206,7 +1166,6 @@ void valvecoeff(Project *pr, int k)
     // low resistance linear head loss relation
     else
     {
-        printf("\tvalve without minor headloss: low resistance\n");
         hyd->P[k] = 1.0 / CSMALL;
         hyd->Y[k] = flow;
     }

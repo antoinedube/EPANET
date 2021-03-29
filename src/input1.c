@@ -59,42 +59,13 @@ int getdata(Project *pr)
     // Read in network data
     rewind(pr->parser.InFile);
 
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("pumps:\n");
-    for (int i=1; i<=pr->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
-    }
-    printf("\n\n");
-
     ERRCODE(readdata(pr));
-
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("pumps:\n");
-    for (int i=1; i<=pr->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
-    }
-    printf("\n\n");
 
     // Adjust data and convert it to internal units
     if (!errcode) adjustdata(pr);
-    printf("adjustdata pumps:\n");
-    for (int i=1; i<=pr->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
-    }
-    printf("\n\n");
     if (!errcode) initunits(pr);
-    printf("initunits pumps:\n");
-    for (int i=1; i<=pr->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
-    }
-    printf("\n\n");
     ERRCODE(inittanks(pr));
     if (!errcode) convertunits(pr);
-    printf("convertunits pumps:\n");
-    for (int i=1; i<=pr->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, pr->network.Pump[i].Q0, pr->network.Pump[i].H0, pr->network.Pump[i].R, pr->network.Pump[i].N);
-    }
-    printf("\n\n");
     return errcode;
 }
 

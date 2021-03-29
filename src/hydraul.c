@@ -117,7 +117,6 @@ void inithyd(Project *pr, int initflag)
     // Initialize links
     for (i = 1; i <= net->Nlinks; i++)
     {
-        printf("Link flow %d: %lf\n", i, hyd->LinkFlow[i]);
         link = &net->Link[i];
         link->ResultIndex = i;
 
@@ -126,24 +125,20 @@ void inithyd(Project *pr, int initflag)
         hyd->LinkSetting[i] = link->Kc;
 
         // Compute flow resistance
-        printf("%s:%d\tComputing link r value for link id: %d\n", __FILE__, __LINE__, i);
         resistcoeff(pr, i); // compute link resistance coefficient r
 
         // Start active control valves in ACTIVE position
         if ( (link->Type == PRV || link->Type == PSV || link->Type == FCV) && (link->Kc != MISSING)) {
-            printf("%s:%d\n", __FILE__, __LINE__);
             hyd->LinkStatus[i] = ACTIVE;
         }
 
         // Initialize flows if necessary
         if (hyd->LinkStatus[i] <= CLOSED)
         {
-            printf("Init link flow to QZERO=%lf\n", QZERO);
             hyd->LinkFlow[i] = QZERO;
         }
         else if (ABS(hyd->LinkFlow[i]) <= QZERO || initflag > 0)
         {
-            printf("%s:%d\n", __FILE__, __LINE__);
             initlinkflow(pr, i, hyd->LinkStatus[i], hyd->LinkSetting[i]);
         }
 
@@ -363,13 +358,9 @@ void  initlinkflow(Project *pr, int i, char s, double k)
     else if (link->Type == PUMP)
     {
         hyd->LinkFlow[i] = k * n->Pump[findpump(n,i)].Q0;
-        printf("Initial value of flow in a pump:\n");
-        printf("\tk (setting in STATUS section of inp file == pump speed): %lf\tQ0: %lf\tQinit: %lf\tH0: %lf\n", k, n->Pump[findpump(n, i)].Q0, hyd->LinkFlow[i], n->Pump[findpump(n, i)].H0);
     }
     else
     {
-        printf("Initial value of flow in a pipe:\n");
-        printf("\tPI: %lf\tD: %lf\tQinit: %lf\n", PI, link->Diam, PI * SQR(link->Diam)/4.0);
         hyd->LinkFlow[i] = PI * SQR(link->Diam)/4.0;
     }
 }
@@ -1135,4 +1126,3 @@ void resetpumpflow(Project *pr, int i)
     if (pump->Ptype == CONST_HP)
         pr->hydraul.LinkFlow[i] = pump->Q0;
 }
-

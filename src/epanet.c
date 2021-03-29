@@ -42,7 +42,6 @@ int DLLEXPORT EN_createproject(EN_Project *p)
 **----------------------------------------------------------------
 */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     struct Project *project = (struct Project *)calloc(1, sizeof(struct Project));
     if (project == NULL) return -1;
     getTmpName(project->TmpHydFname);
@@ -61,7 +60,6 @@ int DLLEXPORT EN_deleteproject(EN_Project p)
 **----------------------------------------------------------------
 */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     if (p == NULL) return -1;
     if (p->Openflag) {
       EN_close(p);
@@ -96,21 +94,9 @@ int DLLEXPORT EN_runproject(EN_Project p, const char *inpFile,
 {
     int errcode = 0;
 
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("pumps:\n");
-    for (int i=1; i<=p->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-    }
-    printf("\n\n");
     // Read in project data from an input file
     ERRCODE(EN_open(p, inpFile, rptFile, outFile));
 
-    printf("%s:%d\n", __FILE__, __LINE__);
-    printf("pumps:\n");
-    for (int i=1; i<=p->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-    }
-    printf("\n\n");
     p->viewprog = pviewprog;
 
     // Solve for system hydraulics
@@ -145,7 +131,6 @@ int DLLEXPORT EN_init(EN_Project p, const char *rptFile, const char *outFile,
  **----------------------------------------------------------------
  */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     int errcode = 0;
 
     // Set system flags
@@ -227,22 +212,8 @@ int DLLEXPORT EN_open(EN_Project p, const char *inpFile, const char *rptFile,
   ERRCODE(netsize(p));
   ERRCODE(allocdata(p));
 
-  printf("%s:%d\n", __FILE__, __LINE__);
-  printf("pumps:\n");
-  for (int i=1; i<=p->network.Npumps; i++) {
-      printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-  }
-  printf("\n\n");
-
   // Read input data
   ERRCODE(getdata(p));
-
-  printf("%s:%d\n", __FILE__, __LINE__);
-  printf("pumps:\n");
-  for (int i=1; i<=p->network.Npumps; i++) {
-      printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-  }
-  printf("\n\n");
 
   // Close input file
   if (p->parser.InFile != NULL)
@@ -274,7 +245,6 @@ int DLLEXPORT EN_gettitle(EN_Project p, char *line1, char *line2, char *line3)
 **----------------------------------------------------------------
 */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     if (!p->Openflag) return 102;
     strncpy(line1, p->Title[0], TITLELEN);
     strncpy(line2, p->Title[1], TITLELEN);
@@ -290,7 +260,6 @@ int DLLEXPORT EN_settitle(EN_Project p, char *line1, char *line2, char *line3)
 **----------------------------------------------------------------
 */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     if (!p->Openflag) return 102;
     strncpy(p->Title[0], line1, TITLELEN);
     strncpy(p->Title[1], line2, TITLELEN);
@@ -440,70 +409,16 @@ int DLLEXPORT EN_solveH(EN_Project p)
  **----------------------------------------------------------------
  */
 {
-    printf("%s:%d\n", __FILE__, __LINE__);
     int errcode;
     long t, tstep;
 
-    printf("Starting point:\n");
-    printf("node head\n");
-    for (int i=1; i<=p->network.Nnodes; i++) {
-        printf("\t%d --> h: %lf\n", i, p->hydraul.NodeHead[i]);
-    }
-
-    printf("link flow:\n");
-    for (int i=1; i<=p->network.Nlinks; i++) {
-        printf("\t%d --> q: %lf, r: %lf, D: %lf\n", i, p->hydraul.LinkFlow[i], p->network.Link[i].R, p->network.Link[i].Diam);
-    }
-
-    printf("pump:\n");
-    for (int i=1; i<=p->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-    }
-    printf("\n\n");
-
-
     // Open hydraulics solver
     errcode = EN_openH(p);
-    printf("With hydraulic solver opened:\n");
-    printf("node head\n");
-    for (int i=1; i<=p->network.Nnodes; i++) {
-        printf("\t%d --> h: %lf\n", i, p->hydraul.NodeHead[i]);
-    }
-
-    printf("link flow:\n");
-    for (int i=1; i<=p->network.Nlinks; i++) {
-        printf("\t%d --> q: %lf, r: %lf, D: %lf\n", i, p->hydraul.LinkFlow[i], p->network.Link[i].R, p->network.Link[i].Diam);
-    }
-    printf("\n\n");
-
-    printf("pump:\n");
-    for (int i=1; i<=p->network.Npumps; i++) {
-        printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-    }
-    printf("\n\n");
 
     if (!errcode)
     {
         // Initialize hydraulics
         errcode = EN_initH(p, EN_SAVE);
-        printf("With hydraulic solver initialized:\n");
-        printf("node head\n");
-        for (int i=1; i<=p->network.Nnodes; i++) {
-            printf("\t%d --> h: %lf\n", i, p->hydraul.NodeHead[i]);
-        }
-
-        printf("link flow:\n");
-        for (int i=1; i<=p->network.Nlinks; i++) {
-            printf("\t%d --> q: %lf, r: %lf, D: %lf\n", i, p->hydraul.LinkFlow[i], p->network.Link[i].R, p->network.Link[i].Diam);
-        }
-        printf("\n\n");
-
-        printf("pump:\n");
-        for (int i=1; i<=p->network.Npumps; i++) {
-            printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-        }
-        printf("\n\n");
-
 
         // Analyze each hydraulic time period
         if (!errcode) do
@@ -517,24 +432,6 @@ int DLLEXPORT EN_solveH(EN_Project p)
             // Solve for hydraulics & advance to next time period
             tstep = 0;
             ERRCODE(EN_runH(p, &t));
-
-            printf("\ntimestep: %ld\n", t);
-            printf("node head\n");
-            for (int i=1; i<=p->network.Nnodes; i++) {
-                printf("\t%d --> h: %lf\n", i, p->hydraul.NodeHead[i]);
-            }
-
-            printf("link flow:\n");
-            for (int i=1; i<=p->network.Nlinks; i++) {
-                printf("\t%d --> q: %lf, r: %lf, D: %lf\n", i, p->hydraul.LinkFlow[i], p->network.Link[i].R, p->network.Link[i].Diam);
-            }
-            printf("\n\n");
-
-            printf("pump:\n");
-            for (int i=1; i<=p->network.Npumps; i++) {
-                printf("\t%d --> Q0: %lf, H0: %lf, R: %lf, N: %lf\n", i, p->network.Pump[i].Q0, p->network.Pump[i].H0, p->network.Pump[i].R, p->network.Pump[i].N);
-            }
-            printf("\n\n");
 
             ERRCODE(EN_nextH(p, &tstep));
         } while (tstep > 0);
@@ -4158,7 +4055,6 @@ int DLLEXPORT EN_setpipedata(EN_Project p, int index, double length,
     if (p->hydraul.Formflag == DW) Link[index].Kc /= (1000.0 * Ucf[ELEV]);
 
     // Update minor loss factor & pipe flow resistance
-    printf("%s:%d\n", __FILE__, __LINE__);
     Link[index].Km = 0.02517 * mloss / SQR(Link[index].Diam) / SQR(Link[index].Diam);
     resistcoeff(p, index);
     return 0;
