@@ -242,6 +242,7 @@ int  localadjlists(Network *net, Smatrix *sm)
     // For each link, update adjacency lists of its end nodes
     for (k = 1; k <= net->Nlinks; k++)
     {
+        printf("\tlink: %d\n", k);
         i = net->Link[k].N1;
         j = net->Link[k].N2;
         pmark = paralink(net, sm, i, j, k);  // Parallel link check
@@ -267,6 +268,11 @@ int  localadjlists(Network *net, Smatrix *sm)
 
     // Remove parallel links from adjacency lists
     xparalinks(net);
+
+    for (int i=0; i<net->Nlinks; i++) {
+      printf("\t\tNdx[%d] = %d\n", i, sm->Ndx[i]);
+    }
+
     return errcode;
 }
 
@@ -320,7 +326,7 @@ void  xparalinks(Network *net)
     {
         alink = net->Adjlist[i];               // First item in list
         blink = NULL;
-        while (alink != NULL)
+        while (alink != NULL)  // Iterate until end of current linked list
         {
             if (alink->node == 0)              // Parallel link marker found
             {
