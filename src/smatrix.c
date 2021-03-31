@@ -274,6 +274,14 @@ int  localadjlists(Network *net, Smatrix *sm)
       printf("\t\tNdx[%d] = %d\n", i, sm->Ndx[i]);
     }
 
+    printf("Adjacency lists:\n");
+    for (int i = 1; i <= net->Nnodes; i++) {
+      printf("  node: %d\n", i);
+      for (alink = net->Adjlist[i]; alink != NULL; alink = alink->next)
+      {
+        printf("    %d, %d\n", alink->node, alink->link);
+      }
+    }
     return errcode;
 }
 
