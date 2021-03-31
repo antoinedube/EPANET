@@ -83,6 +83,7 @@ int  createsparse(Project *pr)
 **--------------------------------------------------------------
 */
 {
+    printf("%s:%d\tcreatesparse\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Smatrix *sm = &pr->hydraul.smatrix;
 
