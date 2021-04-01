@@ -115,55 +115,55 @@ int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
     // static int mmdint_(int* neqns, int* xadj, int* adjncy, int* dhead, int* dforw, int* dbakw, int* qsize, int* llist, int* marker)
     printf("%s:%d\tmmdint parameters before call:\n", __FILE__, __LINE__);
     printf("\tneqns: %d\n", *neqns);
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns+1; i++) {
       printf("\txadj[%d] = %d\n", i, xadj[i]);
     }
-    for (int i=1; i<=21; i++) {
+    for (int i=0; i<=20; i++) {
       printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tdhead[%d] = %d\n", i, dhead[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tinvp[%d] = %d\n", i, invp[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tperm[%d] = %d\n", i, perm[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tqsize[%d] = %d\n", i, qsize[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tllist[%d] = %d\n", i, llist[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tmarker[%d] = %d\n", i, marker[i]);
     }
     mmdint_(neqns, xadj, adjncy, dhead, invp, perm, qsize, llist, marker);
     printf("%s:%d\tmmdint parameters after call:\n", __FILE__, __LINE__);
     printf("\tneqns: %d\n", *neqns);
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns+1; i++) {
       printf("\txadj[%d] = %d\n", i, xadj[i]);
     }
-    for (int i=1; i<=21; i++) {
+    for (int i=0; i<=20; i++) {
       printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tdhead[%d] = %d\n", i, dhead[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tinvp[%d] = %d\n", i, invp[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tperm[%d] = %d\n", i, perm[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tqsize[%d] = %d\n", i, qsize[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tllist[%d] = %d\n", i, llist[i]);
     }
-    for (int i=1; i<=*neqns; i++) {
+    for (int i=0; i<=*neqns; i++) {
       printf("\tmarker[%d] = %d\n", i, marker[i]);
     }
     /*

@@ -391,6 +391,7 @@ int   reordernodes(Project *pr)
 
     // Allocate memory
     adjncy = (int *) calloc(2*nlinks+1, sizeof(int));
+    printf("2*nlinks+1: %d\n", 2*nlinks+1);
     xadj   = (int *) calloc(njuncs+2, sizeof(int));
     dhead  = (int *) calloc(njuncs+1, sizeof(int));
     qsize  = (int *) calloc(njuncs + 1, sizeof(int));
