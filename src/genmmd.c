@@ -1,9 +1,10 @@
-/*  MULTIPLE MINIMUM DEGREE ROW RE-ORDERING ALGORITHM 
+/*  MULTIPLE MINIMUM DEGREE ROW RE-ORDERING ALGORITHM
  *
  *  Modified to work with Fortran-style arrays and be thread-safe.
  *
  */
 
+#include <stdio.h>
 #include <math.h>
 
 int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
@@ -110,7 +111,73 @@ int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
     *nofsub = 0;
     //mmdint_(neqns, &xadj[1], &adjncy[1], &dhead[1], &invp[1], &perm[1],
     //        &qsize[1], &llist[1], &marker[1]);
+
+    // static int mmdint_(int* neqns, int* xadj, int* adjncy, int* dhead, int* dforw, int* dbakw, int* qsize, int* llist, int* marker)
+    printf("%s:%d\tmmdint parameters before call:\n", __FILE__, __LINE__);
+    printf("\tneqns: %d\n", *neqns);
+    for (int i=1; i<=*neqns; i++) {
+      printf("\txadj[%d] = %d\n", i, xadj[i]);
+    }
+    for (int i=1; i<=21; i++) {
+      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tdhead[%d] = %d\n", i, dhead[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tinvp[%d] = %d\n", i, invp[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tperm[%d] = %d\n", i, perm[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tqsize[%d] = %d\n", i, qsize[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tllist[%d] = %d\n", i, llist[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tmarker[%d] = %d\n", i, marker[i]);
+    }
     mmdint_(neqns, xadj, adjncy, dhead, invp, perm, qsize, llist, marker);
+    printf("%s:%d\tmmdint parameters after call:\n", __FILE__, __LINE__);
+    printf("\tneqns: %d\n", *neqns);
+    for (int i=1; i<=*neqns; i++) {
+      printf("\txadj[%d] = %d\n", i, xadj[i]);
+    }
+    for (int i=1; i<=21; i++) {
+      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tdhead[%d] = %d\n", i, dhead[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tinvp[%d] = %d\n", i, invp[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tperm[%d] = %d\n", i, perm[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tqsize[%d] = %d\n", i, qsize[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tllist[%d] = %d\n", i, llist[i]);
+    }
+    for (int i=1; i<=*neqns; i++) {
+      printf("\tmarker[%d] = %d\n", i, marker[i]);
+    }
+    /*
+      Modified in mmdint():
+        neqns: no
+        xadj: no
+        adjncy: no
+        dhead: yes
+        invp: yes
+        perm: yes
+        qsize: yes
+        llist: yes
+        marker: yes
+    */
 
 /*        ---------------------------------------------- */
 /*        NUM COUNTS THE NUMBER OF ORDERED NODES PLUS 1. */
@@ -122,6 +189,7 @@ int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
 /*        ----------------------------- */
     nextmd = dhead[1];
 L100:
+    printf("%s:%d\tnum: %d\n", __FILE__, __LINE__, num);
     if (nextmd <= 0) {
         goto L200;
     }
@@ -293,6 +361,7 @@ static int mmdint_(int* neqns, int* xadj, int* adjncy, int* dhead, int* dforw,
     i__1 = *neqns;
     for (node = 1; node <= i__1; ++node) {
         ndeg = xadj[node + 1] - xadj[node] + 1;
+        printf("%s:%d\tndeg: %d\n", __FILE__, __LINE__, ndeg);
         fnode = dhead[ndeg];
         dforw[node] = fnode;
         dhead[ndeg] = node;
@@ -344,8 +413,24 @@ static int mmdelm_(int* mdnode, int* xadj, int* adjncy, int* dhead, int* dforw,
     int i__1, i__2;
 
     /* Local variables */
-    int node = 0, link = 0, rloc = 0, rlmt = 0, i = 0, j = 0, nabor = 0, rnode = 0, elmnt = 0, xqnbr = 0,
-            istop = 0, jstop = 0, istrt = 0, jstrt = 0, nxnode = 0, pvnode = 0, nqnbrs = 0, npv = 0;
+    int node = 0;
+    int link = 0;
+    int rloc = 0;
+    int rlmt = 0;
+    int i = 0;
+    int j = 0;
+    int nabor = 0;
+    int rnode = 0;
+    int elmnt = 0;
+    int xqnbr = 0;
+    int istop = 0;
+    int jstop = 0;
+    int istrt = 0;
+    int jstrt = 0;
+    int nxnode = 0;
+    int pvnode = 0;
+    int nqnbrs = 0;
+    int npv = 0;
 
 
 /* *************************************************************** */
@@ -363,6 +448,7 @@ static int mmdelm_(int* mdnode, int* xadj, int* adjncy, int* dhead, int* dforw,
     //--adjncy; --xadj;
 
     /* Function Body */
+    printf("mdnode: %d\n", *mdnode);
     marker[*mdnode] = *tag;
     istrt = xadj[*mdnode];
     istop = xadj[*mdnode + 1] - 1;
@@ -463,9 +549,9 @@ L1100:
         if (rnode < 0) {
             goto L1100;
         } else if (rnode == 0) {
-            goto L1800;
+            goto L1800;  // break from loop
         } else {
-            goto L1200;
+            goto L1200;  // Do nothing, exit if/else
         }
 L1200:
 /*                -------------------------------------------- */
@@ -500,7 +586,7 @@ L1300:
         for (j = jstrt; j <= i__2; ++j) {
             nabor = adjncy[j];
             if (nabor == 0) {
-                goto L1500;
+                goto L1500; // break from loop
             }
             if (marker[nabor] >= *tag) {
                 goto L1400;
@@ -646,16 +732,16 @@ L400:
         enode = adjncy[i];
         link = -enode;
         if (enode < 0) {
-            goto L400;
+            goto L400; // restart loop
         } else if (enode == 0) {
-            goto L800;
+            goto L800; // break from for-i loop
         } else {
-            goto L500;
+            goto L500; // just exit if/else
         }
 
 L500:
         if (qsize[enode] == 0) {
-            goto L700;
+            goto L700; // continue for-i loop to next index
         }
         deg0 += qsize[enode];
         marker[enode] = mtag;
@@ -774,7 +860,7 @@ L1300:
         }
 L1400:
         ;
-    }
+    }  // for-i loop
     goto L2100;
 L1500:
 /*                ------------------------------------------------ */
@@ -801,10 +887,10 @@ L1600:
     for (i = istrt; i <= i__1; ++i) {
         nabor = adjncy[i];
         if (nabor == 0) {
-            goto L2100;
+            goto L2100; // break from loop
         }
         if (marker[nabor] >= *tag) {
-            goto L2000;
+            goto L2000; // continue for-i loop
         }
         marker[nabor] = *tag;
         link = nabor;

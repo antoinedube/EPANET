@@ -243,7 +243,6 @@ int  localadjlists(Network *net, Smatrix *sm)
     // For each link, update adjacency lists of its end nodes
     for (k = 1; k <= net->Nlinks; k++)
     {
-        printf("\tlink: %d\n", k);
         i = net->Link[k].N1;
         j = net->Link[k].N2;
         pmark = paralink(net, sm, i, j, k);  // Parallel link check
@@ -270,18 +269,6 @@ int  localadjlists(Network *net, Smatrix *sm)
     // Remove parallel links from adjacency lists
     xparalinks(net);
 
-    for (int i=0; i<net->Nlinks; i++) {
-      printf("\t\tNdx[%d] = %d\n", i, sm->Ndx[i]);
-    }
-
-    printf("Adjacency lists:\n");
-    for (int i = 1; i <= net->Nnodes; i++) {
-      printf("  node: %d\n", i);
-      for (alink = net->Adjlist[i]; alink != NULL; alink = alink->next)
-      {
-        printf("    %d, %d\n", alink->node, alink->link);
-      }
-    }
     return errcode;
 }
 
@@ -429,8 +416,7 @@ int   reordernodes(Project *pr)
         }
 
         // Generate a multiple minimum degree node re-ordering
-        genmmd(&njuncs, xadj, adjncy, sm->Row, sm->Order, &delta,
-               dhead, qsize, llist, marker, &maxint, &nofsub);
+        genmmd(&njuncs, xadj, adjncy, sm->Row, sm->Order, &delta, dhead, qsize, llist, marker, &maxint, &nofsub);
         errcode = 0;
     }
     else errcode = 101;  //insufficient memory
@@ -464,6 +450,22 @@ int factorize(Project *pr)
     int errcode = 0;
     Padjlist alink;
 
+    printf("Before factorization\n");
+    for (k = 1; k <= net->Nnodes; k++)
+    {
+      printf("k, Row, Order: %d, %d, %d\n", k, sm->Row[k], sm->Order[k]);
+    }
+
+    for (k = 1; k <= net->Njuncs; k++)
+    {
+        printf("node: %d\n", k);
+        for (alink = net->Adjlist[k]; alink != NULL; alink = alink->next)
+        {
+          printf("\tnode, link: %d, %d\n", alink->node, alink->link);
+        }
+    }
+
+
     // Find degree of each junction node
     int *degree = (int *)calloc(net->Nnodes + 1, sizeof(int));
     if (degree == NULL) return 101;
@@ -485,6 +487,7 @@ int factorize(Project *pr)
     for (k = 1; k <= net->Njuncs; k++)          // Examine each junction
     {
         knode = sm->Order[k];                   // Re-ordered index
+        printf("\n\nGrowing list of node: %d\n", knode);
         if (!growlist(pr, knode, degree))               // Augment adjacency list
         {
             errcode = 101;
@@ -493,6 +496,23 @@ int factorize(Project *pr)
         degree[knode] = 0;                  // In-activate node
     }
     free(degree);
+
+    printf("After factorization\n");
+    for (k = 1; k <= net->Nnodes; k++)
+    {
+      printf("k, Row, Order: %d, %d, %d\n", k, sm->Row[k], sm->Order[k]);
+    }
+
+    for (k = 1; k <= net->Njuncs; k++)
+    {
+        printf("node: %d\n", k);
+        for (alink = net->Adjlist[k]; alink != NULL; alink = alink->next)
+        {
+          printf("\tnode, link: %d, %d\n", alink->node, alink->link);
+        }
+    }
+
+
     return errcode;
 }
 
@@ -554,6 +574,7 @@ int  newlink(Project *pr, Padjlist alink, int *degree)
     for (blink = alink->next; blink != NULL; blink = blink->next)
     {
         jnode = blink->node;          // End node of next connection
+        printf("\tinode, jnode: %d, %d\n", inode, jnode);
 
         // If jnode still active, and inode not connected to jnode,
         // then add a new connection between inode and jnode.
@@ -561,6 +582,7 @@ int  newlink(Project *pr, Padjlist alink, int *degree)
         {
             if (!linked(net, inode, jnode))      // inode not linked to jnode
             {
+              printf(" --> Nodes %d and %d are not linked\n", inode, jnode);
                 // Since new connection represents a non-zero coeff.
                 // in the solution matrix, update the coeff. count.
                 sm->Ncoeffs++;

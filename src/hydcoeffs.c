@@ -170,7 +170,7 @@ void   matrixcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tcomputing matrix coefficients\n", __FILE__, __LINE__);
+    // printf("%s:%d\tcomputing matrix coefficients\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -206,7 +206,7 @@ void  linkcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tlinkcoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tlinkcoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -265,7 +265,7 @@ void  nodecoeffs(Project *pr)
 **----------------------------------------------------------------
 */
 {
-    printf("%s:%d\tnodecoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tnodecoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -293,7 +293,7 @@ void  valvecoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tvalvecoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tvalvecoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
 
@@ -349,7 +349,7 @@ void  emittercoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\temittercoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\temittercoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -390,7 +390,7 @@ void emitterheadloss(Project *pr, int i, double *hloss, double *hgrad)
 **-------------------------------------------------------------
 */
 {
-    printf("%s:%d\temitterheadloss\n", __FILE__, __LINE__);
+    // printf("%s:%d\temitterheadloss\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     double  ke;
@@ -430,7 +430,7 @@ void  demandcoeffs(Project *pr)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tdemandcoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tdemandcoeffs\n", __FILE__, __LINE__);
     Network *net = &pr->network;
     Hydraul *hyd = &pr->hydraul;
     Smatrix *sm = &hyd->smatrix;
@@ -527,7 +527,7 @@ void  pipecoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tpipecoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tpipecoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     double  hloss,     // Head loss
@@ -690,7 +690,7 @@ void  pumpcoeff(Project *pr, int k)
 **--------------------------------------------------------------
 */
 {
-    printf("%s:%d\tpumpcoeffs\n", __FILE__, __LINE__);
+    // printf("%s:%d\tpumpcoeffs\n", __FILE__, __LINE__);
     Hydraul *hyd = &pr->hydraul;
 
     int    p;                // Pump index
