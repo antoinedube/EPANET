@@ -113,59 +113,7 @@ int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
     //        &qsize[1], &llist[1], &marker[1]);
 
     // static int mmdint_(int* neqns, int* xadj, int* adjncy, int* dhead, int* dforw, int* dbakw, int* qsize, int* llist, int* marker)
-    printf("%s:%d\tmmdint parameters before call:\n", __FILE__, __LINE__);
-    printf("\tneqns: %d\n", *neqns);
-    for (int i=0; i<=*neqns+1; i++) {
-      printf("\txadj[%d] = %d\n", i, xadj[i]);
-    }
-    for (int i=0; i<=20; i++) {
-      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tdhead[%d] = %d\n", i, dhead[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tinvp[%d] = %d\n", i, invp[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tperm[%d] = %d\n", i, perm[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tqsize[%d] = %d\n", i, qsize[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tllist[%d] = %d\n", i, llist[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tmarker[%d] = %d\n", i, marker[i]);
-    }
     mmdint_(neqns, xadj, adjncy, dhead, invp, perm, qsize, llist, marker);
-    printf("%s:%d\tmmdint parameters after call:\n", __FILE__, __LINE__);
-    printf("\tneqns: %d\n", *neqns);
-    for (int i=0; i<=*neqns+1; i++) {
-      printf("\txadj[%d] = %d\n", i, xadj[i]);
-    }
-    for (int i=0; i<=20; i++) {
-      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tdhead[%d] = %d\n", i, dhead[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tinvp[%d] = %d\n", i, invp[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tperm[%d] = %d\n", i, perm[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tqsize[%d] = %d\n", i, qsize[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tllist[%d] = %d\n", i, llist[i]);
-    }
-    for (int i=0; i<=*neqns; i++) {
-      printf("\tmarker[%d] = %d\n", i, marker[i]);
-    }
     /*
       Modified in mmdint():
         neqns: no
@@ -189,7 +137,6 @@ int genmmd(int* neqns, int* xadj, int* adjncy, int* invp, int* perm,
 /*        ----------------------------- */
     nextmd = dhead[1];
 L100:
-    printf("%s:%d\tnum: %d\n", __FILE__, __LINE__, num);
     if (nextmd <= 0) {
         goto L200;
     }
@@ -269,8 +216,65 @@ L600:
 L800:
     //mmdelm_(&mdnode, &xadj[1], &adjncy[1], &dhead[1], &invp[1], &perm[1],
     //        &qsize[1], &llist[1], &marker[1], maxint, &tag);
-    mmdelm_(&mdnode, xadj, adjncy, dhead, invp, perm, qsize, llist,
-            marker, maxint, &tag);
+    printf("%s:%d\tmmdelm parameters before call:\n", __FILE__, __LINE__);
+    printf("\tmdnode: %d\n", mdnode);
+    for (int i=0; i<=*neqns+1; i++) {
+      printf("\txadj[%d] = %d\n", i, xadj[i]);
+    }
+    for (int i=0; i<=20; i++) {
+      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tdhead[%d] = %d\n", i, dhead[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tinvp[%d] = %d\n", i, invp[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tperm[%d] = %d\n", i, perm[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tqsize[%d] = %d\n", i, qsize[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tllist[%d] = %d\n", i, llist[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tmarker[%d] = %d\n", i, marker[i]);
+    }
+    printf("\tmaxint = %d\n", maxint);
+    printf("\ttag = %d\n", tag);
+
+    mmdelm_(&mdnode, xadj, adjncy, dhead, invp, perm, qsize, llist, marker, maxint, &tag);
+
+    printf("%s:%d\tmmdelm parameters after call:\n", __FILE__, __LINE__);
+    printf("\tmdnode: %d\n", mdnode);
+    for (int i=0; i<=*neqns+1; i++) {
+      printf("\txadj[%d] = %d\n", i, xadj[i]);
+    }
+    for (int i=0; i<=20; i++) {
+      printf("\tadjncy[%d] = %d\n", i, adjncy[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tdhead[%d] = %d\n", i, dhead[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tinvp[%d] = %d\n", i, invp[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tperm[%d] = %d\n", i, perm[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tqsize[%d] = %d\n", i, qsize[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tllist[%d] = %d\n", i, llist[i]);
+    }
+    for (int i=0; i<=*neqns; i++) {
+      printf("\tmarker[%d] = %d\n", i, marker[i]);
+    }
+    printf("\tmaxint = %d\n", maxint);
+    printf("\ttag = %d\n", tag);
     num += qsize[mdnode];
     llist[mdnode] = ehead;
     ehead = mdnode;
@@ -361,7 +365,6 @@ static int mmdint_(int* neqns, int* xadj, int* adjncy, int* dhead, int* dforw,
     i__1 = *neqns;
     for (node = 1; node <= i__1; ++node) {
         ndeg = xadj[node + 1] - xadj[node] + 1;
-        printf("%s:%d\tndeg: %d\n", __FILE__, __LINE__, ndeg);
         fnode = dhead[ndeg];
         dforw[node] = fnode;
         dhead[ndeg] = node;
@@ -448,7 +451,6 @@ static int mmdelm_(int* mdnode, int* xadj, int* adjncy, int* dhead, int* dforw,
     //--adjncy; --xadj;
 
     /* Function Body */
-    printf("mdnode: %d\n", *mdnode);
     marker[*mdnode] = *tag;
     istrt = xadj[*mdnode];
     istop = xadj[*mdnode + 1] - 1;
@@ -532,9 +534,11 @@ L900:
     elmnt = llist[elmnt];
     goto L300;
 L1000:
+
     if (rloc <= rlmt) {
         adjncy[rloc] = 0;
     }
+
 /*        -------------------------------------------------------- */
 /*        FOR EACH NODE IN THE REACHABLE SET, DO THE FOLLOWING ... */
 /*        -------------------------------------------------------- */
@@ -597,6 +601,7 @@ L1400:
             ;
         }
 L1500:
+
 /*                ---------------------------------------- */
 /*                IF NO ACTIVE NABOR AFTER THE PURGING ... */
 /*                ---------------------------------------- */
@@ -631,7 +636,6 @@ L1700:
     }
 L1800:
     return 0;
-
 } /* mmdelm_ */
 
 /* *************************************************************** */

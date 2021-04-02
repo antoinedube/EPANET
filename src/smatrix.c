@@ -369,6 +369,7 @@ int   reordernodes(Project *pr)
     int maxint = INT_MAX;   //defined in limits.h
     int errcode;
     Padjlist alink;
+    printf("INT_MAX: %d\n", INT_MAX);
 
     // Local versions of node adjacency lists
     int *adjncy = NULL;
@@ -391,7 +392,6 @@ int   reordernodes(Project *pr)
 
     // Allocate memory
     adjncy = (int *) calloc(2*nlinks+1, sizeof(int));
-    printf("2*nlinks+1: %d\n", 2*nlinks+1);
     xadj   = (int *) calloc(njuncs+2, sizeof(int));
     dhead  = (int *) calloc(njuncs+1, sizeof(int));
     qsize  = (int *) calloc(njuncs + 1, sizeof(int));
@@ -418,6 +418,7 @@ int   reordernodes(Project *pr)
 
         // Generate a multiple minimum degree node re-ordering
         genmmd(&njuncs, xadj, adjncy, sm->Row, sm->Order, &delta, dhead, qsize, llist, marker, &maxint, &nofsub);
+        printf("maxint: %d\n", maxint);
         errcode = 0;
     }
     else errcode = 101;  //insufficient memory
