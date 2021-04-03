@@ -234,3 +234,7 @@ buildprod*/
 
 # git merge
 *.orig
+
+# generated documentation
+doc/html
+doc/latex
