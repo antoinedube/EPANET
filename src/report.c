@@ -358,15 +358,15 @@ void writehydstat(Project *pr, int iter, double relerr)
   {
     if (relerr <= hyd->Hacc) sprintf(s1, FMT58, atime, iter);
     else sprintf(s1, FMT59, atime, iter, relerr);
-    writeline(pr, s1); 
+    writeline(pr, s1);
     if (hyd->DemandModel == PDA && hyd->DeficientNodes > 0)
     {
         if (hyd->DeficientNodes == 1)
           sprintf(s1, FMT69a, hyd->DemandReduction);
         else
           sprintf(s1, FMT69b, hyd->DeficientNodes, hyd->DemandReduction);
-        writeline(pr, s1);        
-    }    
+        writeline(pr, s1);
+    }
   }
 
   // Display status changes for tanks:
@@ -717,10 +717,12 @@ void writelinktable(Project *pr, Pfloat *x)
                         if      (y[j] <= CLOSED) k = CLOSED;
                         else if (y[j] == ACTIVE) k = ACTIVE;
                         else                     k = OPEN;
+                        sprintf(s1, " ");
                         sprintf(s1, "%10s", StatTxt[k]);
                     }
                     else
                     {
+                        sprintf(s1, " ");
                         if (fabs(y[j]) > 1.e6) sprintf(s1, "%10.2e", y[j]);
                         else sprintf(s1, "%10.*f", rpt->Field[j].Precision, y[j]);
                     }
