@@ -7,7 +7,7 @@
  Authors:      see AUTHORS
  Copyright:    see AUTHORS
  License:      see LICENSE
- Last Updated: 10/04/2019
+ Last Updated: 03/30/2022
  ******************************************************************************
 */
 
@@ -400,7 +400,7 @@ void emitterheadloss(Project *pr, int i, double *hloss, double *hgrad)
     // Use linear head loss function for small gradient
     if (*hgrad < hyd->RQtol)
     {
-        *hgrad = hyd->RQtol;
+        *hgrad = hyd->RQtol / hyd->Qexp;
         *hloss = (*hgrad) * q;
     }            
 
@@ -486,13 +486,13 @@ void demandheadloss(Project *pr, int i, double dp, double n,
     }
 
     // Use power head loss function for demand less than full
-    else if (r < 1.0)
+    else if (r <= 1.0)
     {
         *hgrad = n * dp * pow(r, n - 1.0) / dfull;
         // ... use linear function for very small gradient
         if (*hgrad < hyd->RQtol)
         {
-            *hgrad = hyd->RQtol;
+            *hgrad = hyd->RQtol / n;
             *hloss = (*hgrad) * d;
         }
         else *hloss = (*hgrad) * d / n;
@@ -553,7 +553,7 @@ void  pipecoeff(Project *pr, int k)
     // ... use linear function for very small gradient
     if (hgrad < hyd->RQtol)
     {
-        hgrad = hyd->RQtol;
+        hgrad = hyd->RQtol / hyd->Hexp;
         hloss = hgrad * q;
     }
     // ... otherwise use original formula
@@ -744,17 +744,23 @@ void  pumpcoeff(Project *pr, int k)
         {
             // ... compute pump curve's gradient
             hgrad = -r / q / q;
-            // ... use linear curve if gradient too large or too small
+            
+            // ... treat as closed link if gradient too large
             if (hgrad > CBIG)
             {
-                hgrad = CBIG;
-                hloss = -hgrad * hyd->LinkFlow[k];
+                hyd->P[k] = 1.0 / CBIG;
+                hyd->Y[k] = hyd->LinkFlow[k];
+                return;
             }
-            else if (hgrad < hyd->RQtol)
+            
+            // ... treat as open valve if gradient too small
+            else if (hgrad < CSMALL)
             {
-                hgrad = hyd->RQtol;
-                hloss = -hgrad * hyd->LinkFlow[k];
-            }
+                hyd->P[k] = 1.0 / CSMALL;
+                hyd->Y[k] = hyd->LinkFlow[k];
+                return;
+            }    
+
             // ... otherwise compute head loss from pump curve
             else
             {
@@ -1131,7 +1137,7 @@ void valvecoeff(Project *pr, int k)
         // Guard against too small a head loss gradient
         if (hgrad < hyd->RQtol)
         {
-            hgrad = hyd->RQtol;
+            hgrad = hyd->RQtol / 2.0;
             hloss = flow * hgrad;
         }
         else hloss = flow * hgrad / 2.0;        
