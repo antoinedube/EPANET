@@ -717,14 +717,13 @@ void writelinktable(Project *pr, Pfloat *x)
                         if      (y[j] <= CLOSED) k = CLOSED;
                         else if (y[j] == ACTIVE) k = ACTIVE;
                         else                     k = OPEN;
-                        sprintf(s1, " ");
-                        sprintf(s1, "%10s", StatTxt[k]);
+                        sprintf(s1, "\t%s", StatTxt[k]);
                     }
                     else
                     {
-                        sprintf(s1, " ");
-                        if (fabs(y[j]) > 1.e6) sprintf(s1, "%10.2e", y[j]);
-                        else sprintf(s1, "%10.*f", rpt->Field[j].Precision, y[j]);
+                        sprintf(s1, "\t%.2e", y[j]);
+                        //if (fabs(y[j]) > 1.e6) sprintf(s1, "%10.2e", y[j]);
+                        //else sprintf(s1, "%10.*f", rpt->Field[j].Precision, y[j]);
                     }
                     strcat(s, s1);
                 }
