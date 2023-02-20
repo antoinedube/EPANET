@@ -7,7 +7,7 @@ Description:  saves network data to an EPANET formatted text file
 Authors:      see AUTHORS
 Copyright:    see AUTHORS
 License:      see LICENSE
-Last Updated: 10/29/2019
+Last Updated: 02/05/2023
 ******************************************************************************
 */
 
@@ -33,6 +33,7 @@ extern char *MixTxt[];
 extern char *TstatTxt[];
 extern char *RptFlagTxt[];
 extern char *SectTxt[];
+extern char *BackflowTxt[];
 
 void saveauxdata(Project *pr, FILE *f)
 /*
@@ -312,6 +313,11 @@ int saveinpfile(Project *pr, const char *fname)
         {
             sprintf(s1, "%-31s %12.4f", net->Curve[j].ID, km);
         }
+        // For PCV add loss curve if present
+        else if (link->Type == PCV && (j = net->Valve[i].Curve) > 0)
+        {
+            sprintf(s1, "%12.4f %12.4f %-31s", kc, km, net->Curve[j].ID);
+        }
         else sprintf(s1, "%12.4f %12.4f", kc, km);
         fprintf(f, "\n%s %s", s, s1);
         if (link->Comment) fprintf(f, " ;%s", link->Comment);
@@ -327,6 +333,7 @@ int saveinpfile(Project *pr, const char *fname)
         node = &net->Node[i];
         for (demand = node->D; demand != NULL; demand = demand->next)
         {
+            if (demand->Base == 0.0) continue;
             sprintf(s, " %-31s %14.6f", node->ID, ucf * demand->Base);
             if ((j = demand->Pat) > 0) sprintf(s1, " %-31s", net->Pattern[j].ID);
             else strcpy(s1, " ");
@@ -670,6 +677,7 @@ int saveinpfile(Project *pr, const char *fname)
         fprintf(f, "\n PATTERN             %s", net->Pattern[hyd->DefPat].ID);
     fprintf(f, "\n DEMAND MULTIPLIER   %-.4f", hyd->Dmult);
     fprintf(f, "\n EMITTER EXPONENT    %-.4f", 1.0 / hyd->Qexp);
+    fprintf(f, "\n EMITTER BACKFLOW    %s", BackflowTxt[hyd->EmitBackFlag]);
     fprintf(f, "\n VISCOSITY           %-.6f", hyd->Viscos / VISCOS);
     fprintf(f, "\n DIFFUSIVITY         %-.6f", qual->Diffus / DIFFUS);
     fprintf(f, "\n SPECIFIC GRAVITY    %-.6f", hyd->SpGrav);

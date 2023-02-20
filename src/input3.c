@@ -7,7 +7,7 @@ Description:  parses network data from a line of an EPANET input file
 Authors:      see AUTHORS
 Copyright:    see AUTHORS
 License:      see LICENSE
-Last Updated: 03/20/2022
+Last Updated: 02/05/2023
 ******************************************************************************
 */
 
@@ -25,6 +25,7 @@ Last Updated: 03/20/2022
 extern char *MixTxt[];
 extern char *Fldname[];
 extern char *DemandModelTxt[];
+extern char *BackflowTxt[];
 
 // Exported functions
 int powercurve(double, double, double, double, double, double *, double *,
@@ -471,7 +472,7 @@ int valvedata(Project *pr)
 **  Purpose: processes valve data
 **  Format:
 **     [VALVE]
-**        id  node1  node2  diam  type  setting (lcoeff)
+**        id  node1  node2  diam  type  setting (lcoeff  lcurve)
 **--------------------------------------------------------------
 */
 {
@@ -488,7 +489,8 @@ int valvedata(Project *pr)
            setting,            // Valve setting
            lcoeff = 0.0;       // Minor loss coeff.
     Slink *link;
-    int err = 0;
+    int err = 0,
+        losscurve = 0;          // Loss coeff. curve
 
     // Add new valve to data base
     n = parser->Ntokens;
@@ -521,6 +523,8 @@ int valvedata(Project *pr)
       type = TCV;
     else if (match(parser->Tok[4], w_GPV))
       type = GPV;
+    else if (match(parser->Tok[4], w_PCV))
+      type = PCV;
     else
       return setError(parser, 4, 213);
 
@@ -538,6 +542,16 @@ int valvedata(Project *pr)
     }
     else if (!getfloat(parser->Tok[5], &setting)) return setError(parser, 5, 202);
     if (n >= 7 && !getfloat(parser->Tok[6], &lcoeff)) return setError(parser, 6, 202);
+    
+    // Find loss coeff. curve for PCV
+    if (type == PCV && n >= 8)
+    {
+        c = findcurve(net, parser->Tok[7]);
+        if (c == 0) return setError(parser, 7, 206);
+        losscurve = c;
+        net->Curve[c].Type = VALVE_CURVE;
+        if (setting > 1.0) setting = 1.0;
+    }        
 
     // Check for illegal connections
     if (valvecheck(pr, net->Nlinks, type, j1, j2))
@@ -563,6 +577,7 @@ int valvedata(Project *pr)
     link->ResultIndex = 0;
     link->Comment = xstrcpy(&link->Comment, parser->Comment, MAXMSG);
     net->Valve[net->Nvalves].Link = net->Nlinks;
+    net->Valve[net->Nvalves].Curve = losscurve;
     return 0;
 }
 
@@ -686,11 +701,14 @@ int coordata(Project *pr)
 /*
  **--------------------------------------------------------------
  **  Input:   none
- **  Output:  returns error code
- **  Purpose: processes coordinate data
+ **  Output:  returns 0
+ **  Purpose: processes node coordinate data
  **  Format:
  **    [COORD]
  **      id  x  y
+ **
+ **  Note: since node coords. are not used in any computations,
+ **        invalid data are simply ignored.
  **--------------------------------------------------------------
  */
 {
@@ -702,12 +720,12 @@ int coordata(Project *pr)
     Snode *node;
 
     // Check for valid node ID
-    if (parser->Ntokens < 3) return 201;
-    if ((j = findnode(net, parser->Tok[0])) == 0) return setError(parser, 0, 203);
+    if (parser->Ntokens < 3) return 0;
+    if ((j = findnode(net, parser->Tok[0])) == 0) return 0;
 
     // Check for valid data
-    if (!getfloat(parser->Tok[1], &x)) return setError(parser, 1, 202);
-    if (!getfloat(parser->Tok[2], &y)) return setError(parser, 2, 202);
+    if (!getfloat(parser->Tok[1], &x)) return 0;
+    if (!getfloat(parser->Tok[2], &y)) return 0;
 
     // Save coord data
     node = &net->Node[j];
@@ -720,11 +738,14 @@ int vertexdata(Project *pr)
 /*
  **--------------------------------------------------------------
  **  Input:   none
- **  Output:  returns error code
+ **  Output:  returns 0
  **  Purpose: processes link vertex data
  **  Format:
  **    [VERTICES]
  **      id  x  y
+ **
+ **  Note: since vertex coords. are not used in any computations,
+ **        invalid data are simply ignored.
  **--------------------------------------------------------------
  */
 {
@@ -735,12 +756,12 @@ int vertexdata(Project *pr)
     double x, y;
     
     // Check for valid link ID
-    if (parser->Ntokens < 3) return 201;
-    if ((j = findlink(net, parser->Tok[0])) == 0) return setError(parser, 0, 204);
+    if (parser->Ntokens < 3) return 0;
+    if ((j = findlink(net, parser->Tok[0])) == 0) return 0;
 
     // Check for valid coordinate data
-    if (!getfloat(parser->Tok[1], &x)) return setError(parser, 1, 202);
-    if (!getfloat(parser->Tok[2], &y)) return setError(parser, 2, 202);
+    if (!getfloat(parser->Tok[1], &x)) return 0;
+    if (!getfloat(parser->Tok[2], &y)) return 0;
 
     // Add to link's list of vertex points
     return addlinkvertex(&net->Link[j], x, y);
@@ -901,7 +922,7 @@ int controldata(Project *pr)
         case TIMER:
         case TIMEOFDAY:
           if (n == 6) time = hour(parser->Tok[5], "");
-          if (n == 7) time = hour(parser->Tok[5], parser->Tok[6]);
+          if (n >= 7) time = hour(parser->Tok[5], parser->Tok[6]);
           if (time < 0.0) return setError(parser, 5, 213);
           break;
         case LOWLEVEL:
@@ -1739,6 +1760,7 @@ int optionchoice(Project *pr, int n)
 **    UNBALANCED          STOP/CONTINUE {Niter}
 **    PATTERN             id
 **    DEMAND MODEL        DDA/PDA
+**    EMITTER BACKFLOW    YES/NO
 **--------------------------------------------------------------
 */
 {
@@ -1875,6 +1897,16 @@ int optionchoice(Project *pr, int n)
         choice = findmatch(parser->Tok[2], DemandModelTxt);
         if (choice < 0) return setError(parser, 2, 213);
         hyd->DemandModel = choice;
+    }
+    
+    // EMITTER BACKFLOW
+    else if (match(parser->Tok[0], w_EMITTER))
+    {
+        if (n < 2) return 0;
+        if (!match(parser->Tok[1], w_BACKFLOW)) return -1;
+        choice = findmatch(parser->Tok[2], BackflowTxt);
+        if (choice < 0) return setError(parser, 2, 213);
+        hyd->EmitBackFlag = choice;
     }
 
     // Return -1 if keyword did not match any option

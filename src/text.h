@@ -7,7 +7,7 @@
  Authors:      see AUTHORS
  Copyright:    see AUTHORS
  License:      see LICENSE
- Last Updated: 07/15/2019
+ Last Updated: 02/05/2023
  ******************************************************************************
 */
 
@@ -40,6 +40,7 @@
 #define   w_FCV         "FCV"
 #define   w_TCV         "TCV"
 #define   w_GPV         "GPV"
+#define   w_PCV         "PCV"
 
 #define   w_OPEN        "OPEN"
 #define   w_CLOSED      "CLOSED"
@@ -130,6 +131,7 @@
 #define   w_SEGMENTS    "SEGM"
 #define   w_TOLERANCE   "TOLER"
 #define   w_EMITTER     "EMIT"
+#define   w_BACKFLOW    "BACK"
 
 #define   w_PRICE       "PRICE"
 #define   w_DMNDCHARGE  "DEMAN"

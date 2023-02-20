@@ -104,7 +104,7 @@ int DLLEXPORT ENgettitle(char *line1, char *line2, char *line3)
     return EN_gettitle(_defaultProject, line1, line2, line3) ;
 }
 
-int DLLEXPORT ENsettitle(char *line1, char *line2, char *line3)
+int DLLEXPORT ENsettitle(const char *line1, const char *line2, const char *line3)
 {
     return EN_settitle(_defaultProject, line1, line2, line3) ;
 }
@@ -114,7 +114,7 @@ int DLLEXPORT ENgetcomment(int object, int index, char *comment)
     return EN_getcomment(_defaultProject, object, index, comment);
 }
 
-int  DLLEXPORT ENsetcomment(int object, int index, char *comment)
+int  DLLEXPORT ENsetcomment(int object, int index, const char *comment)
 {
     return EN_setcomment(_defaultProject, object, index, comment);
 }
@@ -156,12 +156,12 @@ int DLLEXPORT ENnextH(long *tStep) { return EN_nextH(_defaultProject, tStep); }
 
 int DLLEXPORT ENcloseH() { return EN_closeH(_defaultProject); }
 
-int DLLEXPORT ENsavehydfile(char *filename)
+int DLLEXPORT ENsavehydfile(const char *filename)
 {
     return EN_savehydfile(_defaultProject, filename);
 }
 
-int DLLEXPORT ENusehydfile(char *filename)
+int DLLEXPORT ENusehydfile(const char *filename)
 {
     return EN_usehydfile(_defaultProject, filename);
 }
@@ -192,11 +192,11 @@ int DLLEXPORT ENcloseQ() { return EN_closeQ(_defaultProject); }
 
 ********************************************************************/
 
-int DLLEXPORT ENwriteline(char *line) { return EN_writeline(_defaultProject, line); }
+int DLLEXPORT ENwriteline(const char *line) { return EN_writeline(_defaultProject, line); }
 
 int DLLEXPORT ENreport() { return EN_report(_defaultProject); }
 
-int DLLEXPORT ENcopyreport(char *filename)
+int DLLEXPORT ENcopyreport(const char *filename)
 {
     return EN_copyreport(_defaultProject, filename);
 }
@@ -205,11 +205,21 @@ int DLLEXPORT ENclearreport() { return EN_clearreport(_defaultProject); }
 
 int DLLEXPORT ENresetreport() { return EN_resetreport(_defaultProject); }
 
-int DLLEXPORT ENsetreport(char *format) { return EN_setreport(_defaultProject, format); }
+int DLLEXPORT ENsetreport(const char *format) { return EN_setreport(_defaultProject, format); }
 
 int DLLEXPORT ENsetstatusreport(int level)
 {
     return EN_setstatusreport(_defaultProject, level);
+}
+
+int DLLEXPORT ENsetreportcallback(void (*callback)(void *userData, void *EN_projectHandle, const char*))
+{
+  return EN_setreportcallback(_defaultProject, callback);
+}
+
+int DLLEXPORT ENsetreportcallbackuserdata(void *userData)
+{
+  return EN_setreportcallbackuserdata(_defaultProject, userData);
 }
 
 int DLLEXPORT ENgetversion(int *version) { return EN_getversion(version); }
@@ -232,6 +242,10 @@ int DLLEXPORT ENgetresultindex(int type, int index, int *value)
     return EN_getresultindex(_defaultProject, type, index, value);
 }
 
+int  DLLEXPORT ENtimetonextevent(int *eventType, long *duration, int *elementIndex)
+{
+    return EN_timetonextevent(_defaultProject, eventType, duration, elementIndex);
+}
 
 /********************************************************************
 
@@ -283,8 +297,8 @@ int DLLEXPORT ENgetqualtype(int *qualType, int *traceNode)
     return EN_getqualtype(_defaultProject, qualType, traceNode);
 }
 
-int DLLEXPORT ENsetqualtype(int qualType, char *chemName, char *chemUnits,
-              char *traceNode)
+int DLLEXPORT ENsetqualtype(int qualType, const char *chemName,
+              const char *chemUnits, const char *traceNode)
 {
     return EN_setqualtype(_defaultProject, qualType, chemName, chemUnits, traceNode);
 }
@@ -295,7 +309,7 @@ int DLLEXPORT ENsetqualtype(int qualType, char *chemName, char *chemUnits,
 
 ********************************************************************/
 
-int DLLEXPORT ENaddnode(char *id, int nodeType, int *index)
+int DLLEXPORT ENaddnode(const char *id, int nodeType, int *index)
 {
     return EN_addnode(_defaultProject, id, nodeType, index);
 }
@@ -305,7 +319,7 @@ int DLLEXPORT ENdeletenode(int index, int actionCode)
     return EN_deletenode(_defaultProject, index, actionCode);
 }
 
-int DLLEXPORT ENgetnodeindex(char *id, int *index)
+int DLLEXPORT ENgetnodeindex(const char *id, int *index)
 {
     return EN_getnodeindex(_defaultProject, id, index);
 }
@@ -315,7 +329,7 @@ int DLLEXPORT ENgetnodeid(int index, char *id)
     return EN_getnodeid(_defaultProject, index, id);
 }
 
-int DLLEXPORT ENsetnodeid(int index, char *newid)
+int DLLEXPORT ENsetnodeid(int index, const char *newid)
 {
     return EN_setnodeid(_defaultProject, index, newid);
 }
@@ -339,7 +353,7 @@ int DLLEXPORT ENsetnodevalue(int index, int property, EN_API_FLOAT_TYPE value)
 }
 
 int DLLEXPORT ENsetjuncdata(int index, EN_API_FLOAT_TYPE elev, EN_API_FLOAT_TYPE dmnd,
-              char *dmndpat)
+              const char *dmndpat)
 {
     return EN_setjuncdata(_defaultProject, index, elev, dmnd, dmndpat);
 }
@@ -347,7 +361,7 @@ int DLLEXPORT ENsetjuncdata(int index, EN_API_FLOAT_TYPE elev, EN_API_FLOAT_TYPE
 int  DLLEXPORT ENsettankdata(int index, EN_API_FLOAT_TYPE elev,
                EN_API_FLOAT_TYPE initlvl, EN_API_FLOAT_TYPE minlvl,
                EN_API_FLOAT_TYPE maxlvl, EN_API_FLOAT_TYPE diam,
-               EN_API_FLOAT_TYPE minvol, char *volcurve)
+               EN_API_FLOAT_TYPE minvol, const char *volcurve)
 {
     return EN_settankdata(_defaultProject, index, elev, initlvl, minlvl, maxlvl,
                           diam, minvol, volcurve);
@@ -387,7 +401,7 @@ int DLLEXPORT ENsetdemandmodel(int model, EN_API_FLOAT_TYPE pmin,
 }
 
 int DLLEXPORT ENadddemand(int nodeIndex, EN_API_FLOAT_TYPE baseDemand,
-    char *demandPattern, char *demandName)
+              const char *demandPattern, const char *demandName)
 {
     return EN_adddemand(_defaultProject, nodeIndex, baseDemand, demandPattern, demandName);
 }
@@ -397,7 +411,7 @@ int DLLEXPORT ENdeletedemand(int nodeIndex, int demandIndex)
     return EN_deletedemand(_defaultProject, nodeIndex, demandIndex);
 }
 
-int DLLEXPORT ENgetdemandindex(int nodeIndex, char *demandName, int *demandIndex)
+int DLLEXPORT ENgetdemandindex(int nodeIndex, const char *demandName, int *demandIndex)
 {
     return EN_getdemandindex(_defaultProject, nodeIndex, demandName, demandIndex);
 }
@@ -437,7 +451,7 @@ int DLLEXPORT ENgetdemandname(int nodeIndex, int demandIndex, char *demandName)
     return EN_getdemandname(_defaultProject, nodeIndex, demandIndex, demandName);
 }
 
-int DLLEXPORT ENsetdemandname(int nodeIndex, int demandIndex, char *demandName)
+int DLLEXPORT ENsetdemandname(int nodeIndex, int demandIndex, const char *demandName)
 {
     return EN_setdemandname(_defaultProject, nodeIndex, demandIndex, demandName);
 }
@@ -448,7 +462,8 @@ int DLLEXPORT ENsetdemandname(int nodeIndex, int demandIndex, char *demandName)
 
 ********************************************************************/
 
-int DLLEXPORT ENaddlink(char *id, int linkType, char *fromNode, char *toNode, int *index)
+int DLLEXPORT ENaddlink(const char *id, int linkType, const char *fromNode,
+              const char *toNode, int *index)
 {
     return EN_addlink(_defaultProject, id, linkType, fromNode, toNode, index);
 }
@@ -458,7 +473,7 @@ int DLLEXPORT ENdeletelink(int index, int actionCode)
     return EN_deletelink(_defaultProject, index, actionCode);
 }
 
-int DLLEXPORT ENgetlinkindex(char *id, int *index)
+int DLLEXPORT ENgetlinkindex(const char *id, int *index)
 {
     return EN_getlinkindex(_defaultProject, id, index);
 }
@@ -468,7 +483,7 @@ int DLLEXPORT ENgetlinkid(int index, char *id)
     return EN_getlinkid(_defaultProject, index, id);
 }
 
-int DLLEXPORT ENsetlinkid(int index, char *newid)
+int DLLEXPORT ENsetlinkid(int index, const char *newid)
 {
     return EN_setlinkid(_defaultProject, index, newid);
 }
@@ -516,7 +531,7 @@ int DLLEXPORT ENgetvertexcount(int index, int *count)
 {
     return EN_getvertexcount(_defaultProject, index, count);
 }
-    
+
 int DLLEXPORT ENgetvertex(int index, int vertex, double *x, double *y)
 {
     return EN_getvertex(_defaultProject, index, vertex, x, y);
@@ -530,7 +545,7 @@ int DLLEXPORT ENsetvertex(int index, int vertex, double x, double y)
 int DLLEXPORT ENsetvertices(int index, double *x, double *y, int count)
 {
     return EN_setvertices(_defaultProject, index, x, y, count);
-}    
+}
 
 /********************************************************************
 
@@ -559,7 +574,7 @@ int DLLEXPORT ENsetheadcurveindex(int linkIndex, int curveIndex)
 
 ********************************************************************/
 
-int DLLEXPORT ENaddpattern(char *id)
+int DLLEXPORT ENaddpattern(const char *id)
 {
     return EN_addpattern(_defaultProject, id);
 }
@@ -569,7 +584,7 @@ int DLLEXPORT ENdeletepattern(int index)
     return EN_deletepattern(_defaultProject, index);
 }
 
-int DLLEXPORT ENgetpatternindex(char *id, int *index)
+int DLLEXPORT ENgetpatternindex(const char *id, int *index)
 {
     return EN_getpatternindex(_defaultProject, id, index);
 }
@@ -579,7 +594,7 @@ int DLLEXPORT ENgetpatternid(int index, char *id)
     return EN_getpatternid(_defaultProject, index, id);
 }
 
-int DLLEXPORT ENsetpatternid(int index, char *id)
+int DLLEXPORT ENsetpatternid(int index, const char *id)
 {
     return EN_setpatternid(_defaultProject, index, id);
 }
@@ -632,7 +647,7 @@ int DLLEXPORT ENsetpattern(int index, EN_API_FLOAT_TYPE *values, int len)
 
 ********************************************************************/
 
-int DLLEXPORT ENaddcurve(char *id)
+int DLLEXPORT ENaddcurve(const char *id)
 {
     return EN_addcurve(_defaultProject, id);
 }
@@ -642,7 +657,7 @@ int DLLEXPORT ENdeletecurve(int index)
     return EN_deletecurve(_defaultProject, index);
 }
 
-int DLLEXPORT ENgetcurveindex(char *id, int *index)
+int DLLEXPORT ENgetcurveindex(const char *id, int *index)
 {
     return EN_getcurveindex(_defaultProject, id, index);
 }
@@ -652,7 +667,7 @@ int DLLEXPORT ENgetcurveid(int index, char *id)
     return EN_getcurveid(_defaultProject, index, id);
 }
 
-int DLLEXPORT ENsetcurveid(int index, char *id)
+int DLLEXPORT ENsetcurveid(int index, const char *id)
 {
     return EN_setcurveid(_defaultProject, index, id);
 }
@@ -714,10 +729,10 @@ int DLLEXPORT ENsetcurve(int index, EN_API_FLOAT_TYPE *xValues,
     double *xx = NULL;
     double *yy = NULL;
     int i, errcode = 0;
-    
+
     if (xValues == NULL || yValues == NULL) return 206;
     if (nPoints < 1) return 202;
-    
+
     xx = (double *)calloc(nPoints, sizeof(double));
     yy = (double *)calloc(nPoints, sizeof(double));
     if (xx && yy)

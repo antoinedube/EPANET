@@ -67,7 +67,7 @@ int clearreport(Project *pr)
     return 0;
 }
 
-int copyreport(Project* pr, char *filename)
+int copyreport(Project* pr, const char *filename)
 /*
 **------------------------------------------------------
 **   Input:   filename = name of file to copy to
@@ -879,7 +879,7 @@ void writeheader(Project *pr, int type, int contin)
     }
 }
 
-void writeline(Project *pr, char *s)
+void writeline(Project *pr, const char *s)
 /*
 **--------------------------------------------------------------
 **   Input:   *s = text string
@@ -889,6 +889,12 @@ void writeline(Project *pr, char *s)
 */
 {
     Report *rpt = &pr->report;
+    
+    if (pr->report.reportCallback != NULL)
+    {
+        pr->report.reportCallback(pr->report.reportCallbackUserData, pr, s);
+        return;
+    }
 
     if (rpt->RptFile == NULL) return;
     if (rpt->Rptflag)

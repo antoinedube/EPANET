@@ -7,7 +7,7 @@
  Authors:      see AUTHORS
  Copyright:    see AUTHORS
  License:      see LICENSE
- Last Updated: 02/03/2020
+ Last Updated: 08/13/2022
  ******************************************************************************
 */
 
@@ -281,6 +281,8 @@ void initpointers(Project *pr)
     pr->hydraul.smatrix.NZSUB = NULL;
     pr->hydraul.smatrix.LNZ = NULL;
 
+    pr->report.reportCallback = NULL;
+
     initrules(pr);
 }
 
@@ -490,7 +492,7 @@ Pdemand finddemand(Pdemand d, int index)
     return d;
 }
 
-int adddemand(Snode *node, double dbase, int dpat, char *dname)
+int adddemand(Snode *node, double dbase, int dpat, const char *dname)
 /*----------------------------------------------------------------
 **  Input:   node = a network junction node
 **           dbase = base demand value
@@ -832,7 +834,7 @@ int unlinked(Project *pr)
     return 0;
 }    
 
-int findnode(Network *network, char *id)
+int findnode(Network *network, const char *id)
 /*----------------------------------------------------------------
 **  Input:   id = node ID
 **  Output:  none
@@ -844,7 +846,7 @@ int findnode(Network *network, char *id)
     return (hashtable_find(network->NodeHashTable, id));
 }
 
-int findlink(Network *network, char *id)
+int findlink(Network *network, const char *id)
 /*----------------------------------------------------------------
 **  Input:   id = link ID
 **  Output:  none
@@ -860,7 +862,7 @@ int findtank(Network *network, int index)
 /*----------------------------------------------------------------
 **  Input:   index = node index
 **  Output:  none
-**  Returns: index of tank with given node id, or NOTFOUND if tank not found
+**  Returns: index of tank with given node index, or NOTFOUND if tank not found
 **  Purpose: for use in the deletenode function
 **----------------------------------------------------------------
 */
@@ -877,7 +879,7 @@ int findpump(Network *network, int index)
 /*----------------------------------------------------------------
 **  Input:   index = link ID
 **  Output:  none
-**  Returns: index of pump with given link id, or NOTFOUND if pump not found
+**  Returns: index of pump with given link index, or NOTFOUND if pump not found
 **  Purpose: for use in the deletelink function
 **----------------------------------------------------------------
 */
@@ -894,7 +896,7 @@ int findvalve(Network *network, int index)
 /*----------------------------------------------------------------
 **  Input:   index = link ID
 **  Output:  none
-**  Returns: index of valve with given link id, or NOTFOUND if valve not found
+**  Returns: index of valve with given link index, or NOTFOUND if valve not found
 **  Purpose: for use in the deletelink function
 **----------------------------------------------------------------
 */
@@ -907,7 +909,7 @@ int findvalve(Network *network, int index)
     return NOTFOUND;
 }
 
-int findpattern(Network *network, char *id)
+int findpattern(Network *network, const char *id)
 /*----------------------------------------------------------------
 **  Input:   id = time pattern ID
 **  Output:  none
@@ -926,7 +928,7 @@ int findpattern(Network *network, char *id)
     return -1;
 }
 
-int findcurve(Network *network, char *id)
+int findcurve(Network *network, const char *id)
 /*----------------------------------------------------------------
 **  Input:   id = data curve ID
 **  Output:  none
@@ -1010,7 +1012,7 @@ void adjustcurves(Network *network, int index)
 **----------------------------------------------------------------
 */
 {
-    int j, k, setting;
+    int j, k, curve;
 
     // Adjust tank volume curves
     for (j = 1; j <= network->Ntanks; j++)
@@ -1025,15 +1027,25 @@ void adjustcurves(Network *network, int index)
         adjustcurve(&network->Pump[j].Ecurve, index);
     }
 
-    // Adjust GPV curves
+    // Adjust PCV & GPV curves
     for (j = 1; j <= network->Nvalves; j++)
     {
         k = network->Valve[j].Link;
+        if (network->Link[k].Type == PCV)
+        {
+            if ((curve = network->Valve[j].Curve) > 0)
+            {
+                adjustcurve(&curve, index);
+                network->Valve[j].Curve = curve;
+                if (curve == 0)
+                    network->Link[k].Kc = 0.0;
+            }
+        }
         if (network->Link[k].Type == GPV)
         {
-            setting = INT(network->Link[k].Kc);
-            adjustcurve(&setting, index);
-            network->Link[k].Kc = setting;
+            curve = INT(network->Link[k].Kc);
+            adjustcurve(&curve, index);
+            network->Link[k].Kc = curve;
         }
     }
 }
