@@ -251,7 +251,7 @@ int DLLEXPORT EN_gettitle(EN_Project p, char *line1, char *line2, char *line3)
     return 0;
 }
 
-int DLLEXPORT EN_settitle(EN_Project p, const char *line1, 
+int DLLEXPORT EN_settitle(EN_Project p, const char *line1,
     const char *line2, const char *line3)
 /*----------------------------------------------------------------
 **  Input:  line1, line2, line3 = project's title lines
@@ -359,7 +359,7 @@ int DLLEXPORT EN_close(EN_Project p)
  */
 {
     // Free all project data
-    if (p->Openflag) writetime(p, FMT105);
+    // if (p->Openflag) writetime(p, FMT105);
     freedata(p);
 
     // Close output file
@@ -1662,7 +1662,7 @@ int DLLEXPORT EN_settimeparam(EN_Project p, int param, long value)
 
     case EN_STARTTIME:
         if (value > SECperDAY) return 213;
-	    time->Tstart = value;
+        time->Tstart = value;
         break;
 
     default:
@@ -1678,7 +1678,7 @@ int  DLLEXPORT EN_timetonextevent(EN_Project p, int *eventType, long *duration, 
   Times  *time = &p->times;
   long hydStep, tankStep, controlStep;
   int iTank, iControl;
-  
+
   hydStep = time->Hstep;
   tankStep = hydStep;
   controlStep = hydStep;
@@ -3891,14 +3891,14 @@ int DLLEXPORT EN_getlinkvalue(EN_Project p, int index, int property, double *val
             v = (double)Pump[findpump(&p->network, index)].Epat;
         }
         break;
-        
+
     case EN_PCV_CURVE:
         if (Link[index].Type == PCV)
         {
             v = net->Valve[findvalve(&p->network, index)].Curve;
         }
         break;
-        
+
     case EN_GPV_CURVE:
         if (Link[index].Type == GPV)
         {
@@ -4117,7 +4117,7 @@ int DLLEXPORT EN_setlinkvalue(EN_Project p, int index, int property, double valu
             net->Pump[pumpIndex].Epat = patIndex;
         }
         break;
-        
+
     case EN_PCV_CURVE:
         if (Link[index].Type == PCV)
         {

@@ -202,7 +202,7 @@ int   runhyd(Project *pr, long *t)
     if (!errcode)
     {
         // Report new status & save results
-        if (rpt->Statflag) writehydstat(pr,iter,relerr);
+        // if (rpt->Statflag) writehydstat(pr,iter,relerr);
 
         // If system unbalanced and no extra trials
         // allowed, then activate the Haltflag
@@ -212,7 +212,7 @@ int   runhyd(Project *pr, long *t)
         }
 
         // Report any warning conditions
-        if (!errcode) errcode = writehydwarn(pr,iter,relerr);
+        // if (!errcode) errcode = writehydwarn(pr,iter,relerr);
    }
    return errcode;
 }
