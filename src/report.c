@@ -708,7 +708,7 @@ void writelinktable(Project *pr, Pfloat *x)
             if (rpt->LineNum == (long)rpt->PageSize) writeheader(pr, LINKHDR, 1);
 
             // Add link ID and each reported field to string s
-            sprintf(s, "\"%s\",", Link[i].ID);
+            sprintf(s, "%s", Link[i].ID);
             for (j = LENGTH; j <= FRICTION; j++)
             {
                 if (rpt->Field[j].Enabled == TRUE)
@@ -718,11 +718,11 @@ void writelinktable(Project *pr, Pfloat *x)
                         if      (y[j] <= CLOSED) k = CLOSED;
                         else if (y[j] == ACTIVE) k = ACTIVE;
                         else                     k = OPEN;
-                        sprintf(s1, "\"%s\",", StatTxt[k]);
+                        sprintf(s1, "\t%s", StatTxt[k]);
                     }
                     else
                     {
-                        sprintf(s1, "\"%.2e\",", y[j]);
+                        sprintf(s1, "\t%.6f", y[j]);
                         //if (fabs(y[j]) > 1.e6) sprintf(s1, "%10.2e", y[j]);
                         //else sprintf(s1, "%10.*f", rpt->Field[j].Precision, y[j]);
                     }
@@ -734,7 +734,7 @@ void writelinktable(Project *pr, Pfloat *x)
             if ((j = Link[i].Type) > PIPE)
             {
                 // strcat(s, "  ");
-                sprintf(s1, "\"%s\"", LinkTxt[j]);
+                sprintf(s1, "\t%s", LinkTxt[j]);
                 strcat(s, s1);
             }
 
@@ -889,7 +889,7 @@ void writeline(Project *pr, const char *s)
 */
 {
     Report *rpt = &pr->report;
-    
+
     if (pr->report.reportCallback != NULL)
     {
         pr->report.reportCallback(pr->report.reportCallbackUserData, pr, s);
